@@ -32,8 +32,7 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
                                 src={product.image}
                                 alt={product.title}
                                 fill
-                                style={{ objectFit: "contain" }}
-                                className="rounded"
+                                className="rounded object-contain"
                             />
                         </div>
                     </CardContent>
