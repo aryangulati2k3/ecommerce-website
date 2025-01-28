@@ -8,7 +8,7 @@ import {
     CardContent,
     CardFooter,
 } from "@/components/ui/card";
-import { Button } from "./ui/button";
+import { Button } from "@/components/ui/button";
 
 interface Product {
     id: number;

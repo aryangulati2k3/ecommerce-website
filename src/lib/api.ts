@@ -1,7 +1,22 @@
-export const fetchProducts = async () => {
-    const res = await fetch("https://fakestoreapi.com/products");
-    if (!res.ok) {
+interface Rating {
+    rate: number;
+    count: number;
+}
+
+export interface Product {
+    id: number;
+    title: string;
+    price: number;
+    description: string;
+    category: string;
+    image: string;
+    rating: Rating;
+}
+
+export async function fetchProducts(): Promise<Product[]> {
+    const response = await fetch("https://fakestoreapi.com/products");
+    if (!response.ok) {
         throw new Error("Failed to fetch products");
     }
-    return res.json();
-};
+    return response.json();
+}

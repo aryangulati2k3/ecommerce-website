@@ -1,5 +1,5 @@
 import { fetchProducts } from "@/lib/api";
-import ProductCard from "@/components/product-card";
+import ProductCard from "@/components/products/product-card";
 
 interface Product {
   id: number;
