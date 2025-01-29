@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Typeahead from "./search";
+import Typeahead from "@/components/common/search";
 
 export default function Header() {
     return (

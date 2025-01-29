@@ -1,46 +1,24 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { fetchProducts } from "@/lib/api";
 import { Product } from "@/lib/api";
 import { useRouter } from "next/navigation";
 import { Search, X } from "lucide-react";
 
-export default function Searchbar() {
-    const [products, setProducts] = useState<Product[]>([]);
-    const [categories, setCategories] = useState<string[]>([]);
+// Custom hook for the placeholder typing effect
+const useTypingEffect = (categories: string[]) => {
     const [typedPlaceholder, setTypedPlaceholder] = useState(
         'Search for "Products"'
     );
-    const [query, setQuery] = useState("");
-    const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
-    const [selectedIndex, setSelectedIndex] = useState(-1);
-    const router = useRouter();
-    const dropdownRef = useRef<HTMLUListElement>(null);
-    const inputRef = useRef<HTMLInputElement>(null);
 
-    useEffect(() => {
-        const loadProducts = async () => {
-            const productsData = await fetchProducts();
-
-            // Extract unique categories from products
-            const uniqueCategories = Array.from(
-                new Set(productsData.map((p) => p.category))
-            );
-            setCategories(uniqueCategories);
-            setProducts(productsData);
-        };
-        loadProducts();
-    }, []);
-
-    // Typing effect for placeholder
     useEffect(() => {
         if (categories.length === 0) return;
 
         let index = 0;
         let charIndex = 0;
         let isDeleting = false;
-        let currentCategory = categories[index] || "Products";
+        let currentCategory = categories[index] || "products, brands and more";
         const baseText = 'Search for "';
 
         const typeEffect = () => {
@@ -74,66 +52,104 @@ export default function Searchbar() {
         typeEffect();
     }, [categories]);
 
-    // Search functionality: Filter products by category or product title
-    const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const value = event.target.value.toLowerCase();
-        setQuery(value);
+    return typedPlaceholder;
+};
 
-        if (value.length > 0) {
-            // Check if input matches a category
-            if (categories.includes(value)) {
-                const filtered = products.filter(
-                    (product) => product.category.toLowerCase() === value
-                );
-                setFilteredProducts(filtered);
-            } else {
-                // Otherwise, search by product title
-                const filtered = products.filter((product) =>
-                    product.title.toLowerCase().includes(value)
-                );
-                setFilteredProducts(filtered);
+export default function Searchbar() {
+    const [products, setProducts] = useState<Product[]>([]);
+    const [query, setQuery] = useState("");
+    const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+    const [selectedIndex, setSelectedIndex] = useState(-1);
+    const router = useRouter();
+    const dropdownRef = useRef<HTMLUListElement>(null);
+    const inputRef = useRef<HTMLInputElement>(null);
+
+    // Fetch products and extract unique categories
+    useEffect(() => {
+        const loadProducts = async () => {
+            try {
+                const productsData = await fetchProducts();
+                setProducts(productsData);
+            } catch (error) {
+                console.error("Failed to fetch products:", error);
             }
-            setSelectedIndex(-1);
-        } else {
+        };
+        loadProducts();
+    }, []);
+
+    const categories = useMemo(() => {
+        return Array.from(new Set(products.map((p) => p.category)));
+    }, [products]);
+
+    const typedPlaceholder = useTypingEffect(categories);
+
+    // Debounced search logic
+    const handleSearch = useCallback(
+        (event: React.ChangeEvent<HTMLInputElement>) => {
+            const value = event.target.value.toLowerCase();
+            setQuery(value);
+
+            if (value.length > 0) {
+                if (categories.includes(value)) {
+                    const filtered = products.filter(
+                        (product) => product.category.toLowerCase() === value
+                    );
+                    setFilteredProducts(filtered);
+                } else {
+                    const filtered = products.filter((product) =>
+                        product.title.toLowerCase().includes(value)
+                    );
+                    setFilteredProducts(filtered);
+                }
+                setSelectedIndex(-1);
+            } else {
+                setFilteredProducts([]);
+                setSelectedIndex(-1);
+            }
+        },
+        [categories, products]
+    );
+
+    const handleSelect = useCallback(
+        (product: Product) => {
+            router.push(`/products/${product.id}`);
+            setQuery("");
             setFilteredProducts([]);
             setSelectedIndex(-1);
-        }
-    };
+        },
+        [router]
+    );
 
-    const handleSelect = (product: Product) => {
-        router.push(`/products/${product.id}`);
-        setQuery("");
-        setFilteredProducts([]);
-        setSelectedIndex(-1);
-    };
-
-    const handleClear = () => {
+    const handleClear = useCallback(() => {
         setQuery("");
         setFilteredProducts([]);
         inputRef.current?.focus();
-    };
+    }, []);
 
-    const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-        if (filteredProducts.length === 0) return;
+    const handleKeyDown = useCallback(
+        (event: React.KeyboardEvent<HTMLInputElement>) => {
+            if (filteredProducts.length === 0) return;
 
-        if (event.key === "ArrowDown") {
-            setSelectedIndex((prevIndex) =>
-                prevIndex < filteredProducts.length - 1
-                    ? prevIndex + 1
-                    : prevIndex
-            );
-        } else if (event.key === "ArrowUp") {
-            setSelectedIndex((prevIndex) =>
-                prevIndex > 0 ? prevIndex - 1 : prevIndex
-            );
-        } else if (event.key === "Enter" && selectedIndex >= 0) {
-            handleSelect(filteredProducts[selectedIndex]);
-        } else if (event.key === "Escape") {
-            setFilteredProducts([]);
-            setSelectedIndex(-1);
-            setQuery("");
-        }
-    };
+            if (event.key === "ArrowDown") {
+                setSelectedIndex((prevIndex) =>
+                    prevIndex < filteredProducts.length - 1
+                        ? prevIndex + 1
+                        : prevIndex
+                );
+            } else if (event.key === "ArrowUp") {
+                setSelectedIndex((prevIndex) =>
+                    prevIndex > 0 ? prevIndex - 1 : prevIndex
+                );
+            } else if (event.key === "Enter" && selectedIndex >= 0) {
+                handleSelect(filteredProducts[selectedIndex]);
+            } else if (event.key === "Escape") {
+                setFilteredProducts([]);
+                setSelectedIndex(-1);
+                setQuery("");
+            }
+        },
+        [filteredProducts, handleSelect, selectedIndex]
+    );
 
     useEffect(() => {
         const handleGlobalKeyDown = (event: KeyboardEvent) => {
@@ -162,9 +178,9 @@ export default function Searchbar() {
     }, [selectedIndex]);
 
     return (
-        <div className="relative w-full max-w-lg lg:max-w-xl mx-auto px-4">
+        <div className="relative w-full max-w-lg lg:max-w-xl mx-auto px-4 pt-4 lg:pt-0">
             {/* Search Bar */}
-            <div className="flex items-center bg-gray-100 rounded-full px-4 py-2 shadow-sm w-full relative">
+            <div className="flex items-center bg-gray-100 rounded-full px-4 p-2 shadow-sm w-full relative">
                 <Search className="w-5 h-5 text-gray-500" />
                 <input
                     ref={inputRef}

@@ -17,17 +17,19 @@ interface Product {
     image: string;
 }
 
-const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
+export default function ProductCard({ product }: { product: Product }) {
     return (
         <Link href={`/products/${product.id}`} passHref>
-            <Card className="w-full h-full flex flex-col justify-between cursor-pointer">
+            <Card className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg h-full flex flex-col justify-between">
                 <div>
                     <CardHeader>
-                        <CardTitle>{product.title}</CardTitle>
-                        <CardDescription>${product.price}</CardDescription>
+                        <CardTitle className="text-lg md:text-xl line-clamp-2">
+                            {product.title}
+                        </CardTitle>
+                        <CardDescription className="text-gray-600">${product.price}</CardDescription>
                     </CardHeader>
                     <CardContent className="flex justify-center items-center">
-                        <div className="w-[150px] h-[150px] relative">
+                        <div className="w-full h-20 sm:h-48 md:h-50 lg:h-64 relative">
                             <Image
                                 src={product.image}
                                 alt={product.title}
@@ -38,13 +40,11 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
                     </CardContent>
                 </div>
                 <CardFooter className="mt-auto">
-                    <Button className="w-full px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                    <Button variant={"outline"} className="w-full py-2">
                         View Details
                     </Button>
                 </CardFooter>
             </Card>
         </Link>
     );
-};
-
-export default ProductCard;
+}
