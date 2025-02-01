@@ -1,228 +1,347 @@
-"use client";
+'use client';
 
-import { useState, useEffect, useRef, useMemo, useCallback } from "react";
-import { fetchProducts } from "@/lib/api";
-import { Product } from "@/lib/api";
-import { useRouter } from "next/navigation";
-import { Search, X } from "lucide-react";
+import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import { fetchProducts } from '@/lib/api';
+import { Product } from '@/lib/api';
+import { useRouter } from 'next/navigation';
+import { Search, X } from 'lucide-react';
 
-// Custom hook for the placeholder typing effect
+// ─── CUSTOM HOOK: Placeholder Typing Effect ───────────────────────────────
 const useTypingEffect = (categories: string[]) => {
-    const [typedPlaceholder, setTypedPlaceholder] = useState(
-        'Search for "Products"'
-    );
+  const [typedPlaceholder, setTypedPlaceholder] = useState(
+    'Search for "Products"',
+  );
 
-    useEffect(() => {
-        if (categories.length === 0) return;
+  useEffect(() => {
+    if (categories.length === 0) return;
 
-        let index = 0;
-        let charIndex = 0;
-        let isDeleting = false;
-        let currentCategory = categories[index] || "products, brands and more";
-        const baseText = 'Search for "';
+    let index = 0;
+    let charIndex = 0;
+    let isDeleting = false;
+    let currentCategory = categories[index] || 'products, brands and more';
+    const baseText = 'Search for "';
 
-        const typeEffect = () => {
-            if (!isDeleting) {
-                if (charIndex < currentCategory.length) {
-                    setTypedPlaceholder(
-                        baseText + currentCategory.slice(0, charIndex + 1) + '"'
-                    );
-                    charIndex++;
-                    setTimeout(typeEffect, 100);
-                } else {
-                    isDeleting = true;
-                    setTimeout(typeEffect, 2000);
-                }
-            } else {
-                if (charIndex > 0) {
-                    setTypedPlaceholder(
-                        baseText + currentCategory.slice(0, charIndex - 1) + '"'
-                    );
-                    charIndex--;
-                    setTimeout(typeEffect, 50);
-                } else {
-                    isDeleting = false;
-                    index = (index + 1) % categories.length;
-                    currentCategory = categories[index] || "Products";
-                    setTimeout(typeEffect, 500);
-                }
-            }
-        };
+    const typeEffect = () => {
+      if (!isDeleting) {
+        if (charIndex < currentCategory.length) {
+          setTypedPlaceholder(
+            baseText + currentCategory.slice(0, charIndex + 1) + '"',
+          );
+          charIndex++;
+          setTimeout(typeEffect, 100);
+        } else {
+          isDeleting = true;
+          setTimeout(typeEffect, 2000);
+        }
+      } else {
+        if (charIndex > 0) {
+          setTypedPlaceholder(
+            baseText + currentCategory.slice(0, charIndex - 1) + '"',
+          );
+          charIndex--;
+          setTimeout(typeEffect, 50);
+        } else {
+          isDeleting = false;
+          index = (index + 1) % categories.length;
+          currentCategory = categories[index] || 'Products';
+          setTimeout(typeEffect, 500);
+        }
+      }
+    };
 
-        typeEffect();
-    }, [categories]);
+    typeEffect();
+  }, [categories]);
 
-    return typedPlaceholder;
+  return typedPlaceholder;
 };
 
+// ─── CUSTOM HOOK: Media Query (detect mobile view) ──────────────────────────
+function useMediaQuery(query: string) {
+  const [matches, setMatches] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.matchMedia(query).matches;
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    const mediaQueryList = window.matchMedia(query);
+    const listener = (e: MediaQueryListEvent) => setMatches(e.matches);
+    mediaQueryList.addEventListener('change', listener);
+    return () => {
+      mediaQueryList.removeEventListener('change', listener);
+    };
+  }, [query]);
+
+  return matches;
+}
+
+// ─── SEARCHBAR COMPONENT ─────────────────────────────────────────────────────
 export default function Searchbar() {
-    const [products, setProducts] = useState<Product[]>([]);
-    const [query, setQuery] = useState("");
-    const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
-    const [selectedIndex, setSelectedIndex] = useState(-1);
-    const router = useRouter();
-    const dropdownRef = useRef<HTMLUListElement>(null);
-    const inputRef = useRef<HTMLInputElement>(null);
+  // Declare isMobile first so it is available in subsequent callbacks
+  const isMobile = useMediaQuery('(max-width: 1023px)');
 
-    // Fetch products and extract unique categories
-    useEffect(() => {
-        const loadProducts = async () => {
-            try {
-                const productsData = await fetchProducts();
-                setProducts(productsData);
-            } catch (error) {
-                console.error("Failed to fetch products:", error);
-            }
-        };
-        loadProducts();
-    }, []);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [query, setQuery] = useState('');
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+  const [selectedIndex, setSelectedIndex] = useState(-1);
+  const [isFullScreen, setIsFullScreen] = useState(false);
+  const router = useRouter();
+  const dropdownRef = useRef<HTMLUListElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
-    const categories = useMemo(() => {
-        return Array.from(new Set(products.map((p) => p.category)));
-    }, [products]);
+  // Fetch products on mount.
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        const productsData = await fetchProducts();
+        setProducts(productsData);
+      } catch (error) {
+        console.error('Failed to fetch products:', error);
+      }
+    };
+    loadProducts();
+  }, []);
 
-    const typedPlaceholder = useTypingEffect(categories);
+  // Extract unique categories.
+  const categories = useMemo(() => {
+    return Array.from(new Set(products.map((p) => p.category)));
+  }, [products]);
 
-    // Debounced search logic
-    const handleSearch = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
-            const value = event.target.value.toLowerCase();
-            setQuery(value);
+  const typedPlaceholder = useTypingEffect(categories);
 
-            if (value.length > 0) {
-                if (categories.includes(value)) {
-                    const filtered = products.filter(
-                        (product) => product.category.toLowerCase() === value
-                    );
-                    setFilteredProducts(filtered);
-                } else {
-                    const filtered = products.filter((product) =>
-                        product.title.toLowerCase().includes(value)
-                    );
-                    setFilteredProducts(filtered);
-                }
-                setSelectedIndex(-1);
-            } else {
-                setFilteredProducts([]);
-                setSelectedIndex(-1);
-            }
-        },
-        [categories, products]
-    );
+  // ── HANDLE SEARCH ─────────────────────────────────────────────
+  const handleSearch = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const value = event.target.value.toLowerCase();
+      setQuery(value);
 
-    const handleSelect = useCallback(
-        (product: Product) => {
-            router.push(`/products/${product.id}`);
-            setQuery("");
-            setFilteredProducts([]);
-            setSelectedIndex(-1);
-        },
-        [router]
-    );
-
-    const handleClear = useCallback(() => {
-        setQuery("");
-        setFilteredProducts([]);
-        inputRef.current?.focus();
-    }, []);
-
-    const handleKeyDown = useCallback(
-        (event: React.KeyboardEvent<HTMLInputElement>) => {
-            if (filteredProducts.length === 0) return;
-
-            if (event.key === "ArrowDown") {
-                setSelectedIndex((prevIndex) =>
-                    prevIndex < filteredProducts.length - 1
-                        ? prevIndex + 1
-                        : prevIndex
-                );
-            } else if (event.key === "ArrowUp") {
-                setSelectedIndex((prevIndex) =>
-                    prevIndex > 0 ? prevIndex - 1 : prevIndex
-                );
-            } else if (event.key === "Enter" && selectedIndex >= 0) {
-                handleSelect(filteredProducts[selectedIndex]);
-            } else if (event.key === "Escape") {
-                setFilteredProducts([]);
-                setSelectedIndex(-1);
-                setQuery("");
-            }
-        },
-        [filteredProducts, handleSelect, selectedIndex]
-    );
-
-    useEffect(() => {
-        const handleGlobalKeyDown = (event: KeyboardEvent) => {
-            if (event.key === "/") {
-                event.preventDefault();
-                inputRef.current?.focus();
-            }
-        };
-
-        document.addEventListener("keydown", handleGlobalKeyDown);
-        return () => {
-            document.removeEventListener("keydown", handleGlobalKeyDown);
-        };
-    }, []);
-
-    useEffect(() => {
-        if (dropdownRef.current && selectedIndex >= 0) {
-            const selectedItem = dropdownRef.current.children[
-                selectedIndex
-            ] as HTMLElement;
-            selectedItem?.scrollIntoView({
-                block: "nearest",
-                behavior: "smooth",
-            });
+      if (value.length > 0) {
+        // If the query exactly matches a category (ignoring case)
+        if (categories.map((cat) => cat.toLowerCase()).includes(value)) {
+          const filtered = products.filter(
+            (product) => product.category.toLowerCase() === value,
+          );
+          setFilteredProducts(filtered);
+        } else {
+          const filtered = products.filter((product) =>
+            product.title.toLowerCase().includes(value),
+          );
+          setFilteredProducts(filtered);
         }
-    }, [selectedIndex]);
+        setSelectedIndex(-1);
+      } else {
+        setFilteredProducts([]);
+        setSelectedIndex(-1);
+      }
+    },
+    [categories, products],
+  );
 
-    return (
-        <div className="relative w-full max-w-lg lg:max-w-xl mx-auto px-4 pt-4 lg:pt-0">
-            {/* Search Bar */}
-            <div className="flex items-center bg-gray-100 rounded-full px-4 p-2 shadow-sm w-full relative">
-                <Search className="w-5 h-5 text-gray-500" />
+  // ── HANDLE ITEM SELECTION ─────────────────────────────────────
+  const handleSelect = useCallback(
+    (product: Product) => {
+      router.push(`/products/${product.id}`);
+      setQuery('');
+      setFilteredProducts([]);
+      setSelectedIndex(-1);
+    },
+    [router],
+  );
+
+  // ── CLEAR SEARCH ──────────────────────────────────────────────
+  const handleClear = useCallback(() => {
+    setQuery('');
+    setFilteredProducts([]);
+    setSelectedIndex(-1);
+    inputRef.current?.focus();
+  }, []);
+
+  // ── KEYBOARD NAVIGATION ─────────────────────────────────────────
+  const handleKeyDown = useCallback(
+    (event: React.KeyboardEvent<HTMLInputElement>) => {
+      if (filteredProducts.length === 0) return;
+
+      if (event.key === 'ArrowDown') {
+        setSelectedIndex((prevIndex) =>
+          prevIndex < filteredProducts.length - 1 ? prevIndex + 1 : prevIndex,
+        );
+      } else if (event.key === 'ArrowUp') {
+        setSelectedIndex((prevIndex) =>
+          prevIndex > 0 ? prevIndex - 1 : prevIndex,
+        );
+      } else if (event.key === 'Enter' && selectedIndex >= 0) {
+        handleSelect(filteredProducts[selectedIndex]);
+      } else if (event.key === 'Escape') {
+        setFilteredProducts([]);
+        setSelectedIndex(-1);
+        setQuery('');
+        if (isMobile) {
+          setIsFullScreen(false);
+        }
+      }
+    },
+    [filteredProducts, handleSelect, selectedIndex, isMobile],
+  );
+
+  // ── Global key to focus search (desktop only) ──────────────────────
+  useEffect(() => {
+    const handleGlobalKeyDown = (event: KeyboardEvent) => {
+      if (event.key === '/' && !isMobile) {
+        event.preventDefault();
+        inputRef.current?.focus();
+      }
+    };
+
+    document.addEventListener('keydown', handleGlobalKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleGlobalKeyDown);
+    };
+  }, [isMobile]);
+
+  // ── Scroll selected dropdown item into view (desktop) ─────────────
+  useEffect(() => {
+    if (dropdownRef.current && selectedIndex >= 0) {
+      const selectedItem = dropdownRef.current.children[
+        selectedIndex
+      ] as HTMLElement;
+      selectedItem?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+  }, [selectedIndex]);
+
+  return (
+    <>
+      {isMobile ? (
+        // ── MOBILE VIEW: Show a clickable search preview that opens fullscreen ─
+        <div className="mx-auto w-full max-w-lg px-4 pt-4">
+          <div
+            className="flex cursor-pointer items-center rounded-full bg-gray-100 p-2 px-4 shadow-sm"
+            onClick={() => {
+              setIsFullScreen(true);
+              // Optionally reset the search state when opening the modal.
+              setQuery('');
+              setFilteredProducts([]);
+              setSelectedIndex(-1);
+            }}
+          >
+            <Search className="h-5 w-5 text-gray-500" />
+            <span className="ml-2 text-gray-500">{typedPlaceholder}</span>
+          </div>
+        </div>
+      ) : (
+        // ── DESKTOP VIEW: Render inline search bar with dropdown results ─
+        <div className="relative mx-auto w-full max-w-lg px-4 pt-4 lg:max-w-xl lg:pt-0">
+          <div className="relative flex w-full items-center rounded-full bg-gray-100 p-2 px-4 shadow-sm">
+            <Search className="h-5 w-5 text-gray-500" />
+            <input
+              ref={inputRef}
+              type="text"
+              value={query}
+              onChange={handleSearch}
+              onKeyDown={handleKeyDown}
+              className="w-full border-none bg-transparent px-2 text-sm text-gray-700 placeholder-gray-500 outline-none md:text-base"
+              placeholder={typedPlaceholder}
+            />
+            {query && (
+              <button
+                onClick={handleClear}
+                className="absolute right-3 text-gray-500 hover:text-gray-700"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            )}
+          </div>
+
+          {filteredProducts.length > 0 && (
+            <ul
+              ref={dropdownRef}
+              className="absolute left-0 top-14 z-10 max-h-60 w-full max-w-lg overflow-y-auto rounded border border-gray-300 bg-white shadow-lg lg:max-w-xl"
+            >
+              {filteredProducts.map((product, index) => (
+                <li
+                  key={product.id}
+                  onClick={() => handleSelect(product)}
+                  className={`cursor-pointer p-2 hover:bg-gray-100 ${
+                    selectedIndex === index ? 'bg-gray-200' : ''
+                  }`}
+                >
+                  {product.title} -{' '}
+                  <span className="text-sm text-gray-500">
+                    {product.category}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
+
+      {/* ── FULLSCREEN SEARCH MODAL FOR MOBILE ───────────────────────────── */}
+      {isMobile && isFullScreen && (
+        <div className="fixed inset-0 z-50 flex flex-col bg-white">
+          <div className="flex items-center border-b p-4">
+            <button
+              onClick={() => {
+                setIsFullScreen(false);
+                setQuery('');
+                setFilteredProducts([]);
+                setSelectedIndex(-1);
+              }}
+              className="mr-2"
+            >
+              <X className="h-6 w-6" />
+            </button>
+            <div className="flex-grow">
+              <div className="flex items-center rounded-full bg-gray-100 p-2 px-4 shadow-sm">
+                <Search className="h-5 w-5 text-gray-500" />
                 <input
-                    ref={inputRef}
-                    type="text"
-                    value={query}
-                    onChange={handleSearch}
-                    onKeyDown={handleKeyDown}
-                    className="w-full bg-transparent border-none outline-none px-2 text-gray-700 placeholder-gray-500 text-sm md:text-base"
-                    placeholder={typedPlaceholder}
+                  ref={inputRef}
+                  type="text"
+                  value={query}
+                  onChange={handleSearch}
+                  onKeyDown={handleKeyDown}
+                  autoFocus
+                  className="w-full border-none bg-transparent px-2 text-base text-gray-700 placeholder-gray-500 outline-none"
+                  placeholder={typedPlaceholder}
                 />
                 {query && (
-                    <button
-                        onClick={handleClear}
-                        className="absolute right-3 text-gray-500 hover:text-gray-700"
-                    >
-                        <X className="w-5 h-5" />
-                    </button>
+                  <button
+                    onClick={handleClear}
+                    className="text-gray-500 hover:text-gray-700"
+                  >
+                    <X className="h-5 w-5" />
+                  </button>
                 )}
+              </div>
             </div>
-
-            {/* Search Results Dropdown */}
-            {filteredProducts.length > 0 && (
-                <ul
-                    ref={dropdownRef}
-                    className="absolute top-14 left-0 w-full max-w-lg lg:max-w-xl bg-white border border-gray-300 rounded shadow-lg max-h-60 overflow-y-auto z-10"
-                >
-                    {filteredProducts.map((product, index) => (
-                        <li
-                            key={product.id}
-                            onClick={() => handleSelect(product)}
-                            className={`p-2 cursor-pointer hover:bg-gray-100 ${
-                                selectedIndex === index ? "bg-gray-200" : ""
-                            }`}
-                        >
-                            {product.title} -{" "}
-                            <span className="text-sm text-gray-500">
-                                {product.category}
-                            </span>
-                        </li>
-                    ))}
-                </ul>
+          </div>
+          <div className="flex-1 overflow-y-auto">
+            {filteredProducts.length > 0 ? (
+              <ul className="divide-y">
+                {filteredProducts.map((product, index) => (
+                  <li
+                    key={product.id}
+                    onClick={() => {
+                      handleSelect(product);
+                      setIsFullScreen(false);
+                    }}
+                    className={`cursor-pointer p-4 hover:bg-gray-100 ${
+                      selectedIndex === index ? 'bg-gray-200' : ''
+                    }`}
+                  >
+                    {product.title} -{' '}
+                    <span className="text-sm text-gray-500">
+                      {product.category}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <div className="p-4 text-gray-500">No results found</div>
             )}
+          </div>
         </div>
-    );
+      )}
+    </>
+  );
 }
