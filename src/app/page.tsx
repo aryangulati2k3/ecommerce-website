@@ -1,14 +1,7 @@
-import { fetchProducts } from '@/lib/api';
+import { fetchProducts, Product } from '@/lib/api';
 import ProductCard from '@/components/products/product-card';
 import HeroCarousel from '@/sections/home-page/hero-carousel';
 import CategoryCarousel from '@/sections/home-page/category-carousel';
-
-interface Product {
-  id: number;
-  title: string;
-  price: number;
-  image: string;
-}
 
 export default async function Home() {
   const products: Product[] = await fetchProducts();
