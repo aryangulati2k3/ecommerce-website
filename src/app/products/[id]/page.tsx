@@ -1,21 +1,12 @@
 import Image from 'next/image';
-
-import { fetchProducts } from '@/lib/api';
-
-interface Product {
-  id: number;
-  title: string;
-  price: number;
-  image: string;
-  description: string;
-}
+import { fetchProducts, Product } from '@/lib/api';
+import AddToCartButton from '@/components/cart/add-to-cart-button';
 
 interface ProductPageProps {
-  params: Promise<{ id: string }>;
+  params: { id: string };
 }
 
-export default async function ProductPage(props: ProductPageProps) {
-  const params = await props.params;
+export default async function ProductPage({ params }: ProductPageProps) {
   const products: Product[] = await fetchProducts();
   const product = products.find((p) => p.id.toString() === params.id);
 
@@ -38,10 +29,8 @@ export default async function ProductPage(props: ProductPageProps) {
         <div className="w-full md:w-1/2">
           <h1 className="text-3xl font-bold">{product.title}</h1>
           <p className="mt-4 text-xl text-gray-700">${product.price}</p>
-          <p className="mt-6 text-gray-600">{product.description}</p>
-          <button className="mt-6 rounded bg-blue-500 px-6 py-2 text-white hover:bg-blue-600">
-            Add to Cart
-          </button>
+          <p className="my-4 text-gray-600">{product.description}</p>
+          <AddToCartButton product={product} />
         </div>
       </div>
     </main>

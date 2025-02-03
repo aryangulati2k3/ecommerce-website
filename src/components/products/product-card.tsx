@@ -10,22 +10,10 @@ import {
   CardContent,
   CardFooter,
 } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { useCart } from '@/context/cart-context'; // Adjust this path as needed
-import { Product } from '@/lib/api'; // Import the shared Product interface
+import AddToCartButton from '@/components/cart/add-to-cart-button';
+import { Product } from '@/lib/api';
 
 export default function ProductCard({ product }: { product: Product }) {
-  const { dispatch } = useCart();
-
-  const handleAddToCart = (e: React.MouseEvent<HTMLButtonElement>) => {
-    // Prevent the click event from triggering the Link navigation
-    e.stopPropagation();
-    e.preventDefault();
-
-    // Dispatch the action to add the product to the cart
-    dispatch({ type: 'ADD_TO_CART', product });
-  };
-
   return (
     <Link href={`/products/${product.id}`} passHref>
       <Card className="flex h-full w-full max-w-xs flex-col justify-between sm:max-w-sm md:max-w-md lg:max-w-lg">
@@ -50,13 +38,7 @@ export default function ProductCard({ product }: { product: Product }) {
           </CardContent>
         </div>
         <CardFooter className="mt-auto">
-          <Button
-            variant="outline"
-            className="w-full py-2"
-            onClick={handleAddToCart}
-          >
-            Add to Cart
-          </Button>
+          <AddToCartButton product={product} />
         </CardFooter>
       </Card>
     </Link>

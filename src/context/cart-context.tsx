@@ -1,8 +1,8 @@
+// src/context/cart-context.tsx
 'use client';
 
 import React, { createContext, useReducer, useContext, ReactNode } from 'react';
 
-// Define your Product interface (adapt as needed for Fake Store API)
 export interface Product {
   id: number;
   title: string;
@@ -10,13 +10,12 @@ export interface Product {
   description: string;
   category: string;
   image: string;
-  rating?: {
+  rating: {
     rate: number;
     count: number;
   };
 }
 
-// A CartItem couples a product with a quantity.
 export type CartItem = {
   product: Product;
   quantity: number;
@@ -37,10 +36,8 @@ interface CartContextProps {
   dispatch: React.Dispatch<CartAction>;
 }
 
-// Create the context.
 const CartContext = createContext<CartContextProps | undefined>(undefined);
 
-// The reducer updates cart state based on action types.
 const cartReducer = (state: CartState, action: CartAction): CartState => {
   switch (action.type) {
     case 'ADD_TO_CART': {
@@ -48,7 +45,6 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
         (item) => item.product.id === action.product.id,
       );
       if (existingItem) {
-        // If the product is already in the cart, increase its quantity.
         return {
           items: state.items.map((item) =>
             item.product.id === action.product.id
@@ -57,7 +53,6 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
           ),
         };
       } else {
-        // Otherwise, add the product with an initial quantity of 1.
         return {
           items: [...state.items, { product: action.product, quantity: 1 }],
         };
@@ -87,7 +82,6 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
   }
 };
 
-// The provider wraps your app and makes the cart state available.
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [state, dispatch] = useReducer(cartReducer, { items: [] });
   return (
@@ -97,7 +91,6 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-// A custom hook for easy cart context access.
 export const useCart = () => {
   const context = useContext(CartContext);
   if (!context) {
