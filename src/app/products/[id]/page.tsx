@@ -3,10 +3,11 @@ import { fetchProducts, Product } from '@/lib/api';
 import AddToCartButton from '@/components/cart/add-to-cart-button';
 
 interface ProductPageProps {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
-export default async function ProductPage({ params }: ProductPageProps) {
+export default async function ProductPage(props: ProductPageProps) {
+  const params = await props.params;
   const products: Product[] = await fetchProducts();
   const product = products.find((p) => p.id.toString() === params.id);
 

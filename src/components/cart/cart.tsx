@@ -3,6 +3,7 @@
 import React from 'react';
 import { useCart } from '@/context/cart-context';
 import Image from 'next/image';
+import { ShoppingCart } from 'lucide-react';
 
 export default function Cart() {
   const { state, dispatch } = useCart();
@@ -13,10 +14,13 @@ export default function Cart() {
   );
 
   return (
-    <div className="mx-auto my-8 max-w-4xl rounded-lg bg-white p-6 shadow-md">
+    <div className="mx-auto my-8 min-h-[75vh] max-w-4xl rounded-lg border-gray-400 bg-white p-6 shadow-md">
       <h2 className="mb-6 text-center text-3xl font-bold">Shopping Cart</h2>
       {state.items.length === 0 ? (
-        <p className="text-center text-gray-600">Your cart is empty.</p>
+        <div className="flex flex-col items-center text-center">
+          <p className="text-gray-600">Your cart is empty.</p>
+          <ShoppingCart className="h-30 w-30 mt-6 opacity-50" />
+        </div>
       ) : (
         <div className="space-y-4">
           {state.items.map(({ product, quantity }) => (
