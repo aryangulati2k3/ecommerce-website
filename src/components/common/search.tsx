@@ -213,19 +213,20 @@ export default function Searchbar() {
     <>
       {isMobile ? (
         // ── MOBILE VIEW: Show a clickable search preview that opens fullscreen ─
-        <div className="mx-auto w-full max-w-lg px-4 pt-4">
+        <div className="mx-auto w-full max-w-lg px-4 lg:pt-4">
           <div
             className="flex cursor-pointer items-center rounded-full bg-gray-100 p-2 px-4 shadow-sm"
             onClick={() => {
               setIsFullScreen(true);
-              // Optionally reset the search state when opening the modal.
               setQuery('');
               setFilteredProducts([]);
               setSelectedIndex(-1);
             }}
           >
             <Search className="h-5 w-5 text-gray-500" />
-            <span className="ml-2 text-gray-500">{typedPlaceholder}</span>
+            <span className="ml-2 line-clamp-1 flex-1 text-gray-500">
+              {typedPlaceholder}
+            </span>
           </div>
         </div>
       ) : (

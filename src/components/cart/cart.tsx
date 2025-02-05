@@ -14,8 +14,8 @@ export default function Cart() {
   );
 
   return (
-    <div className="mx-auto my-8 min-h-[75vh] max-w-4xl rounded-lg border-gray-400 bg-white p-6 shadow-md">
-      <h2 className="mb-6 text-center text-3xl font-bold">Shopping Cart</h2>
+    <div className="mx-auto my-8 min-h-[75vh] max-w-4xl bg-white p-6">
+      <h2 className="mb-6 text-center text-2xl font-bold">My Cart</h2>
       {state.items.length === 0 ? (
         <div className="flex flex-col items-center text-center">
           <p className="text-gray-600">Your cart is empty.</p>
@@ -37,7 +37,7 @@ export default function Cart() {
                 />
               </div>
               <div className="ml-4 flex-grow">
-                <h3 className="text-lg font-semibold">{product.title}</h3>
+                <h3 className="text-md font-semibold line-clamp-2">{product.title}</h3>
                 <p className="text-gray-600">${product.price.toFixed(2)}</p>
               </div>
               <div className="flex items-center space-x-2">

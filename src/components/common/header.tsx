@@ -4,10 +4,7 @@ import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { useCart } from '@/context/cart-context';
 import { ShoppingCart } from 'lucide-react';
-
-const Typeahead = dynamic(() => import('@/components/common/search'), {
-  ssr: false,
-});
+import AuthModalWrapper from '@/components/auth/auth-modal-wrapper';
 
 export default function Header() {
   const { state } = useCart();
@@ -16,19 +13,34 @@ export default function Header() {
     0,
   );
 
+  // Dynamically import the Searchbar with SSR disabled.
+  const Searchbar = dynamic(() => import('@/components/common/search'), {
+    ssr: false,
+  });
+
   return (
     <header className="flex w-full items-center justify-between bg-primary-color p-4 shadow-xl">
+      {/* Logo on the left */}
       <div className="flex-shrink-0">
         <Link href="/" className="text-2xl font-bold text-white lg:text-3xl">
           Shop
         </Link>
       </div>
+
+      {/* Centered Search */}
       <div className="mx-4 flex-grow">
-        <Typeahead />
+        <Searchbar />
       </div>
-      <div className="relative flex-shrink-0">
-        <Link href="/cart" className="text-white">
+
+      {/* Right: Login and Cart buttons */}
+      <div className="flex items-center space-x-6">
+        <AuthModalWrapper />
+        <Link
+          href="/cart"
+          className="relative flex flex-col items-center text-white"
+        >
           <ShoppingCart className="h-6 w-6" />
+          <span className="mt-1 text-xs">Cart</span>
           {itemCount > 0 && (
             <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs">
               {itemCount}

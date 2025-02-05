@@ -10,9 +10,7 @@ import { Button } from '@/components/ui/button';
 const registeredNumbers = ['+911234567890', '+919876543210'];
 
 // A small list of country codes with flags (expand as needed)
-const countryCodes = [
-  { code: '+91', name: 'India', flag: '🇮🇳' },
-];
+const countryCodes = [{ code: '+91', name: 'India', flag: '🇮🇳' }];
 
 // Zod schema for phone number: requires at least 10 digits
 const phoneSchema = z.string().regex(/^\d{10,}$/, {
