@@ -1,18 +1,11 @@
 'use client';
 
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselPrevious,
-  CarouselNext,
-} from '@/components/ui/carousel';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState, useMemo } from 'react';
 import { fetchCategories, fetchProducts } from '@/lib/api';
 
-export default function CategoryCarousel() {
+export default function CategorySection() {
   const [categories, setCategories] = useState<string[]>([]);
   const [categoryImages, setCategoryImages] = useState<Record<string, string>>(
     {},
@@ -29,7 +22,7 @@ export default function CategoryCarousel() {
 
         setCategories(categoryList);
 
-        // Build a map from category to the first product's image using reduce
+        // Build a map from category to the first product's image
         const categoryImagesMap = categoryList.reduce(
           (acc, category) => {
             const firstProduct = products.find(
@@ -52,19 +45,16 @@ export default function CategoryCarousel() {
     loadData();
   }, []);
 
-  // Memoize carousel items so they are only recalculated when dependencies change
-  const carouselItems = useMemo(() => {
+  // Memoize category items so they're only recalculated when dependencies change
+  const categoryItems = useMemo(() => {
     return categories.map((category) => (
-      <CarouselItem
-        key={category} // Use category name as unique key
-        className="flex w-auto flex-[0_0_auto] basis-auto justify-center"
-      >
+      <div key={category} className="justify-between flex flex-col items-center">
         <Link
           href={`/categories/${category}`}
           className="flex flex-col items-center"
         >
-          <div className="flex h-30 w-30 items-center justify-center rounded-full border border-gray-400 bg-white p-4 shadow-lg">
-            <div className="flex aspect-square h-20 w-20 items-center justify-center">
+          <div className="flex h-20 w-20 md:h-32 md:w-32 items-center justify-center rounded-full border border-gray-400 bg-white p-4 shadow-lg">
+            <div className="flex aspect-square w-12 h-12 md:h-20 md:w-20 items-center justify-center">
               {categoryImages[category] ? (
                 <Image
                   src={categoryImages[category]}
@@ -84,20 +74,16 @@ export default function CategoryCarousel() {
             {category}
           </p>
         </Link>
-      </CarouselItem>
+      </div>
     ));
   }, [categories, categoryImages]);
 
   return (
-    <div className="mx-auto w-full max-w-7xl px-4 pt-4">
+    <div className="mx-auto w-full md:w-[60vw] px-4 pt-4">
       <h2 className="mb-4 text-center text-3xl font-bold">Shop by Category</h2>
-      <Carousel opts={{ align: 'center', loop: true }} className="relative">
-        <CarouselPrevious />
-        <CarouselContent className="flex justify-center gap-6">
-          {carouselItems}
-        </CarouselContent>
-        <CarouselNext />
-      </Carousel>
+      <div className="grid grid-cols-4 gap-8">
+        {categoryItems}
+      </div>
     </div>
   );
 }
