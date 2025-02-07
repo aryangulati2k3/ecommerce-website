@@ -1,8 +1,9 @@
-import React, { useEffect, useState, KeyboardEvent } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Button } from '@/components/ui/button';
+import { ShieldCheck } from 'lucide-react';
 
 // Common styling variables
 const baseInputClasses =
@@ -47,33 +48,17 @@ const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
   const [step, setStep] = useState<number>(1);
   const [data, setData] = useState<Partial<AuthData>>({});
 
-  // Close modal on Escape key press
-  const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
-    if (e.key === 'Escape') {
-      onClose();
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') onClose();
-    });
-    return () =>
-      document.removeEventListener('keydown', (e) => {
-        if (e.key === 'Escape') onClose();
-      });
-  }, [onClose]);
-
+  // Aggregates data and goes to the next step
   const nextStep = (newData: Partial<AuthData>) => {
     setData((prev) => ({ ...prev, ...newData }));
     setStep((prev) => prev + 1);
   };
 
+  // Called after OTP verification. Instead of closing immediately, proceed to the final confirmation step.
   const handleFinalSubmit = (newData: Partial<AuthData>) => {
     const finalData = { ...data, ...newData } as AuthData;
     console.log('Final Auth Data:', finalData);
-    // Process finalData (API call, etc.)
-    onClose();
+    nextStep({}); // Proceed to the final confirmation (Step 4)
   };
 
   return (
@@ -81,7 +66,6 @@ const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
       className="relative w-full max-w-md rounded bg-white p-6 shadow-lg"
       role="dialog"
       aria-modal="true"
-      onKeyDown={handleKeyDown}
       tabIndex={-1}
     >
       {/* Close button */}
@@ -98,6 +82,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
       {step === 3 && (
         <StepThree onSubmit={handleFinalSubmit} onBack={() => setStep(2)} />
       )}
+      {step === 4 && <StepFour onClose={onClose} />}
     </div>
   );
 };
@@ -119,7 +104,7 @@ const StepOne: React.FC<StepOneProps> = ({ onNext }) => {
     <form onSubmit={handleSubmit(onNext)} className="space-y-4">
       <h2 className="text-center text-xl font-semibold">Enter Mobile Number</h2>
       <div className="flex">
-        <span className="inline-flex items-center rounded-l border border-r-0 border-gray-300 bg-gray-100 px-3">
+        <span className="inline-flex items-center rounded-l rounded-r-none border border-r-0 border-gray-300 bg-gray-100 px-3">
           +91
         </span>
         <input
@@ -134,7 +119,9 @@ const StepOne: React.FC<StepOneProps> = ({ onNext }) => {
         <p className={errorTextClasses}>{errors.mobile.message}</p>
       )}
       <div className="flex justify-end">
-        <Button type="submit">Next</Button>
+        <Button type="submit" className="w-full">
+          Next
+        </Button>
       </div>
     </form>
   );
@@ -180,11 +167,13 @@ const StepTwo: React.FC<StepTwoProps> = ({ onNext, onBack }) => {
           <p className={errorTextClasses}>{errors.lastName.message}</p>
         )}
       </div>
-      <div className="flex justify-between">
-        <Button type="button" onClick={onBack}>
+      <div className="flex justify-between gap-2">
+        <Button type="button" className="w-1/2" onClick={onBack}>
           Back
         </Button>
-        <Button type="submit">Next</Button>
+        <Button type="submit" className="w-1/2">
+          Next
+        </Button>
       </div>
     </form>
   );
@@ -218,13 +207,36 @@ const StepThree: React.FC<StepThreeProps> = ({ onSubmit, onBack }) => {
         />
         {errors.otp && <p className={errorTextClasses}>{errors.otp.message}</p>}
       </div>
-      <div className="flex justify-between">
-        <Button type="button" onClick={onBack}>
+      <div className="flex justify-between gap-2">
+        <Button type="button" className="w-1/2" onClick={onBack}>
           Back
         </Button>
-        <Button type="submit">Submit</Button>
+        <Button type="submit" className="w-1/2">
+          Submit
+        </Button>
       </div>
     </form>
+  );
+};
+
+interface StepFourProps {
+  onClose: () => void;
+}
+
+const StepFour: React.FC<StepFourProps> = ({ onClose }) => {
+  return (
+    <div className="space-y-6 text-center">
+      <h2 className="text-2xl font-bold">Sign In Successful!</h2>
+      <div className="flex justify-center">
+        <ShieldCheck className="h-30 w-30 text-green-700" />
+      </div>
+      <p className="text-gray-700">You have successfully signed in.</p>
+      <div>
+        <Button onClick={onClose} className="w-full">
+          Close
+        </Button>
+      </div>
+    </div>
   );
 };
 
