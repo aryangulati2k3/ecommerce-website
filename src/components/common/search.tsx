@@ -215,7 +215,7 @@ export default function Searchbar() {
         // ── MOBILE VIEW: Show a clickable search preview that opens fullscreen ─
         <div className="mx-auto w-full max-w-lg px-4 lg:pt-4">
           <div
-            className="flex cursor-pointer items-center rounded-full bg-gray-100 p-2 px-4 shadow-sm"
+            className="flex cursor-pointer items-center rounded-full bg-gray-100 p-2 px-4 shadow-xs"
             onClick={() => {
               setIsFullScreen(true);
               setQuery('');
@@ -232,7 +232,7 @@ export default function Searchbar() {
       ) : (
         // ── DESKTOP VIEW: Render inline search bar with dropdown results ─
         <div className="relative mx-auto w-full max-w-lg px-4 pt-4 lg:max-w-xl lg:pt-0">
-          <div className="relative flex w-full items-center rounded-full bg-gray-100 p-2 px-4 shadow-sm">
+          <div className="relative flex w-full items-center rounded-full bg-gray-100 p-2 px-4 shadow-xs">
             <Search className="h-5 w-5 text-gray-500" />
             <input
               ref={inputRef}
@@ -240,7 +240,7 @@ export default function Searchbar() {
               value={query}
               onChange={handleSearch}
               onKeyDown={handleKeyDown}
-              className="w-full border-none bg-transparent px-2 text-sm text-gray-700 placeholder-gray-500 outline-none md:text-base"
+              className="w-full border-none bg-transparent px-2 text-sm text-gray-700 placeholder-gray-500 outline-hidden md:text-base"
               placeholder={typedPlaceholder}
             />
             {query && (
@@ -256,7 +256,7 @@ export default function Searchbar() {
           {filteredProducts.length > 0 && (
             <ul
               ref={dropdownRef}
-              className="absolute left-0 top-14 z-10 max-h-60 w-full max-w-lg overflow-y-auto rounded border border-gray-300 bg-white shadow-lg lg:max-w-xl"
+              className="absolute top-14 left-0 z-10 max-h-60 w-full max-w-lg overflow-y-auto rounded border border-gray-300 bg-white shadow-lg lg:max-w-xl"
             >
               {filteredProducts.map((product, index) => (
                 <li
@@ -292,8 +292,8 @@ export default function Searchbar() {
             >
               <X className="h-6 w-6" />
             </button>
-            <div className="flex-grow">
-              <div className="flex items-center rounded-full bg-gray-100 p-2 px-4 shadow-sm">
+            <div className="grow">
+              <div className="flex items-center rounded-full bg-gray-100 p-2 px-4 shadow-xs">
                 <Search className="h-5 w-5 text-gray-500" />
                 <input
                   ref={inputRef}
@@ -302,7 +302,7 @@ export default function Searchbar() {
                   onChange={handleSearch}
                   onKeyDown={handleKeyDown}
                   autoFocus
-                  className="w-full border-none bg-transparent px-2 text-base text-gray-700 placeholder-gray-500 outline-none"
+                  className="w-full border-none bg-transparent px-2 text-base text-gray-700 placeholder-gray-500 outline-hidden"
                   placeholder={typedPlaceholder}
                 />
                 {query && (

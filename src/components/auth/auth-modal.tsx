@@ -1,261 +1,231 @@
-'use client';
-
-import React, { useState, useRef } from 'react';
-import { z } from 'zod';
+import React, { useEffect, useState, KeyboardEvent } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
 import { Button } from '@/components/ui/button';
 
-// ------------------ Dummy Data and Validation ------------------
+// Common styling variables
+const baseInputClasses =
+  'w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500';
+const baseLabelClasses = 'block text-sm font-medium text-gray-700 mb-1';
+const errorTextClasses = 'text-red-500 text-xs mt-1';
 
-// Dummy registered phone numbers (with country code)
-const registeredNumbers = ['+11234567890', '+449876543210'];
-
-// List of country codes with flags
-const countryCodes = [
-  { code: '+91', name: 'India', flag: '🇮🇳' },
-  // ... add more countries if needed
-];
-
-// Zod schema for phone number (at least 10 digits)
-const phoneSchema = z.string().regex(/^\d{10,}$/, {
-  message: 'Phone number must be at least 10 digits',
+// Zod schemas for each step
+const phoneSchema = z.object({
+  mobile: z
+    .string()
+    .regex(/^\d{10}$/, 'Mobile number must be exactly 10 digits'),
 });
+type PhoneFormValues = z.infer<typeof phoneSchema>;
 
-// Zod schema for sign-up data
-const signUpSchema = z.object({
+const nameSchema = z.object({
   firstName: z.string().min(1, 'First name is required'),
   lastName: z.string().min(1, 'Last name is required'),
-  phone: z.string().regex(/^\d{10,}$/, {
-    message: 'Phone number must be at least 10 digits',
-  }),
 });
+type NameFormValues = z.infer<typeof nameSchema>;
 
-// ------------------ OTP Input Component ------------------
+const otpSchema = z.object({
+  otp: z
+    .string()
+    .length(6, 'OTP must be exactly 6 characters')
+    .regex(/^[A-Za-z0-9]+$/, 'OTP must be alphanumeric'),
+});
+type OTPFormValues = z.infer<typeof otpSchema>;
 
-interface OTPInputProps {
-  otp: string[];
-  setOtp: (otp: string[]) => void;
+interface AuthData {
+  mobile: string;
+  firstName: string;
+  lastName: string;
+  otp: string;
 }
-
-function OTPInput({ otp, setOtp }: OTPInputProps) {
-  const inputsRef = useRef<(HTMLInputElement | null)[]>([]);
-
-  const handleChange = (index: number, value: string) => {
-    const newOtp = [...otp];
-    newOtp[index] = value.slice(-1).toUpperCase();
-    setOtp(newOtp);
-    if (value && index < inputsRef.current.length - 1) {
-      inputsRef.current[index + 1]?.focus();
-    }
-  };
-
-  const handleKeyDown = (
-    index: number,
-    e: React.KeyboardEvent<HTMLInputElement>,
-  ) => {
-    if (e.key === 'Backspace' && !otp[index] && index > 0) {
-      inputsRef.current[index - 1]?.focus();
-    }
-  };
-
-  return (
-    <div className="flex items-center justify-center space-x-1">
-      {Array.from({ length: 6 }).map((_, i) => (
-        <React.Fragment key={i}>
-          {i === 3 && <span className="mx-2 font-bold">-</span>}
-          <input
-            type="text"
-            value={otp[i] || ''}
-            onChange={(e) => handleChange(i, e.target.value)}
-            onKeyDown={(e) => handleKeyDown(i, e)}
-            ref={(el) => {
-              inputsRef.current[i] = el;
-            }}
-            maxLength={1}
-            className="h-12 w-12 rounded border border-gray-300 text-center text-xl"
-          />
-        </React.Fragment>
-      ))}
-    </div>
-  );
-}
-
-// ------------------ Auth Modal Component ------------------
-
-type Step = 'enterPhone' | 'signUp' | 'otp' | 'signedIn';
 
 interface AuthModalProps {
   onClose: () => void;
 }
 
-export default function AuthModal({ onClose }: AuthModalProps) {
-  const [step, setStep] = useState<Step>('enterPhone');
-  const [countryCode, setCountryCode] = useState('+1');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [error, setError] = useState('');
-  const [signUpData, setSignUpData] = useState({
-    firstName: '',
-    lastName: '',
-    phone: '',
-  });
-  const [otp, setOtp] = useState<string[]>(Array(6).fill(''));
+const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
+  const [step, setStep] = useState<number>(1);
+  const [data, setData] = useState<Partial<AuthData>>({});
 
-  // ------------------ Handlers ------------------
-
-  const handlePhoneSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setError('');
-    try {
-      phoneSchema.parse(phoneNumber);
-    } catch (err: unknown) {
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError('An unknown error occurred');
-      }
-      return;
-    }
-    const fullNumber = countryCode + phoneNumber;
-    if (registeredNumbers.includes(fullNumber)) {
-      setStep('otp');
-    } else {
-      setSignUpData({ ...signUpData, phone: phoneNumber });
-      setStep('signUp');
+  // Close modal on Escape key press
+  const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === 'Escape') {
+      onClose();
     }
   };
 
-  const handleSignUpSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setError('');
-    try {
-      signUpSchema.parse(signUpData);
-    } catch (err: unknown) {
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError('An unknown error occurred');
-      }
-      return;
-    }
-    setStep('otp');
+  useEffect(() => {
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') onClose();
+    });
+    return () =>
+      document.removeEventListener('keydown', (e) => {
+        if (e.key === 'Escape') onClose();
+      });
+  }, [onClose]);
+
+  const nextStep = (newData: Partial<AuthData>) => {
+    setData((prev) => ({ ...prev, ...newData }));
+    setStep((prev) => prev + 1);
   };
 
-  const handleOTPSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const otpValue = otp.join('');
-    if (otpValue.length === 6) {
-      setStep('signedIn');
-    } else {
-      setError('Please enter a valid 6-character OTP');
-    }
+  const handleFinalSubmit = (newData: Partial<AuthData>) => {
+    const finalData = { ...data, ...newData } as AuthData;
+    console.log('Final Auth Data:', finalData);
+    // Process finalData (API call, etc.)
+    onClose();
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div className="relative w-full max-w-md rounded bg-white p-6 shadow-md">
-        {/* Close Button */}
-        <button
-          onClick={onClose}
-          className="absolute right-2 top-2 text-2xl text-gray-600"
-        >
-          &times;
-        </button>
+    <div
+      className="relative w-full max-w-md rounded bg-white p-6 shadow-lg"
+      role="dialog"
+      aria-modal="true"
+      onKeyDown={handleKeyDown}
+      tabIndex={-1}
+    >
+      {/* Close button */}
+      <button
+        className="absolute top-2 right-2 text-2xl leading-none text-gray-500 hover:text-gray-700"
+        onClick={onClose}
+        aria-label="Close modal"
+      >
+        &times;
+      </button>
 
-        {step === 'enterPhone' && (
-          <form onSubmit={handlePhoneSubmit} className="space-y-4">
-            <h2 className="text-center text-2xl font-bold">
-              Sign In / Sign Up
-            </h2>
-            {error && <p className="text-red-500">{error}</p>}
-            <div className="flex items-center">
-              <select
-                value={countryCode}
-                onChange={(e) => setCountryCode(e.target.value)}
-                className="mr-2 rounded border border-gray-300 p-2"
-              >
-                {countryCodes.map((c) => (
-                  <option key={c.code} value={c.code}>
-                    {c.flag} {c.code} ({c.name})
-                  </option>
-                ))}
-              </select>
-              <input
-                type="text"
-                placeholder="Phone number"
-                value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
-                className="w-full rounded border border-gray-300 p-2"
-              />
-            </div>
-            <Button
-              type="submit"
-              className="w-full rounded bg-blue-500 py-2 text-white hover:bg-blue-600"
-            >
-              Continue
-            </Button>
-          </form>
-        )}
-
-        {step === 'signUp' && (
-          <form onSubmit={handleSignUpSubmit} className="space-y-4">
-            <h2 className="text-center text-2xl font-bold">Sign Up</h2>
-            {error && <p className="text-red-500">{error}</p>}
-            <input
-              type="text"
-              placeholder="First Name"
-              value={signUpData.firstName}
-              onChange={(e) =>
-                setSignUpData({ ...signUpData, firstName: e.target.value })
-              }
-              className="w-full rounded border border-gray-300 p-2"
-            />
-            <input
-              type="text"
-              placeholder="Last Name"
-              value={signUpData.lastName}
-              onChange={(e) =>
-                setSignUpData({ ...signUpData, lastName: e.target.value })
-              }
-              className="w-full rounded border border-gray-300 p-2"
-            />
-            <input
-              type="text"
-              placeholder="Phone number"
-              value={signUpData.phone}
-              onChange={(e) =>
-                setSignUpData({ ...signUpData, phone: e.target.value })
-              }
-              className="w-full rounded border border-gray-300 p-2"
-            />
-            <Button
-              type="submit"
-              className="w-full rounded bg-blue-500 py-2 text-white hover:bg-blue-600"
-            >
-              Sign Up
-            </Button>
-          </form>
-        )}
-
-        {step === 'otp' && (
-          <form onSubmit={handleOTPSubmit} className="space-y-4">
-            <h2 className="text-center text-2xl font-bold">Enter OTP</h2>
-            {error && <p className="text-red-500">{error}</p>}
-            <OTPInput otp={otp} setOtp={setOtp} />
-            <Button
-              type="submit"
-              className="w-full rounded bg-blue-500 py-2 text-white hover:bg-blue-600"
-            >
-              Sign In
-            </Button>
-          </form>
-        )}
-
-        {step === 'signedIn' && (
-          <div className="text-center">
-            <h2 className="mb-4 text-2xl font-bold">Signed In</h2>
-            <p>Welcome! You have successfully signed in.</p>
-          </div>
-        )}
-      </div>
+      {step === 1 && <StepOne onNext={nextStep} />}
+      {step === 2 && <StepTwo onNext={nextStep} onBack={() => setStep(1)} />}
+      {step === 3 && (
+        <StepThree onSubmit={handleFinalSubmit} onBack={() => setStep(2)} />
+      )}
     </div>
   );
+};
+
+interface StepOneProps {
+  onNext: (data: PhoneFormValues) => void;
 }
+
+const StepOne: React.FC<StepOneProps> = ({ onNext }) => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<PhoneFormValues>({
+    resolver: zodResolver(phoneSchema),
+  });
+
+  return (
+    <form onSubmit={handleSubmit(onNext)} className="space-y-4">
+      <h2 className="text-center text-xl font-semibold">Enter Mobile Number</h2>
+      <div className="flex">
+        <span className="inline-flex items-center rounded-l border border-r-0 border-gray-300 bg-gray-100 px-3">
+          +91
+        </span>
+        <input
+          type="text"
+          {...register('mobile')}
+          className={`${baseInputClasses} rounded-l-none`}
+          placeholder="10-digit mobile number"
+          autoFocus
+        />
+      </div>
+      {errors.mobile && (
+        <p className={errorTextClasses}>{errors.mobile.message}</p>
+      )}
+      <div className="flex justify-end">
+        <Button type="submit">Next</Button>
+      </div>
+    </form>
+  );
+};
+
+interface StepTwoProps {
+  onNext: (data: NameFormValues) => void;
+  onBack: () => void;
+}
+
+const StepTwo: React.FC<StepTwoProps> = ({ onNext, onBack }) => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<NameFormValues>({
+    resolver: zodResolver(nameSchema),
+  });
+
+  return (
+    <form onSubmit={handleSubmit(onNext)} className="space-y-4">
+      <h2 className="text-center text-xl font-semibold">Enter Your Name</h2>
+      <div>
+        <label className={baseLabelClasses}>First Name</label>
+        <input
+          type="text"
+          {...register('firstName')}
+          className={baseInputClasses}
+          autoFocus
+        />
+        {errors.firstName && (
+          <p className={errorTextClasses}>{errors.firstName.message}</p>
+        )}
+      </div>
+      <div>
+        <label className={baseLabelClasses}>Last Name</label>
+        <input
+          type="text"
+          {...register('lastName')}
+          className={baseInputClasses}
+        />
+        {errors.lastName && (
+          <p className={errorTextClasses}>{errors.lastName.message}</p>
+        )}
+      </div>
+      <div className="flex justify-between">
+        <Button type="button" onClick={onBack}>
+          Back
+        </Button>
+        <Button type="submit">Next</Button>
+      </div>
+    </form>
+  );
+};
+
+interface StepThreeProps {
+  onSubmit: (data: OTPFormValues) => void;
+  onBack: () => void;
+}
+
+const StepThree: React.FC<StepThreeProps> = ({ onSubmit, onBack }) => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<OTPFormValues>({
+    resolver: zodResolver(otpSchema),
+  });
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <h2 className="text-center text-xl font-semibold">OTP Verification</h2>
+      <div>
+        <label className={baseLabelClasses}>Enter OTP</label>
+        <input
+          type="text"
+          {...register('otp')}
+          className={baseInputClasses}
+          placeholder="6-digit OTP"
+          autoFocus
+        />
+        {errors.otp && <p className={errorTextClasses}>{errors.otp.message}</p>}
+      </div>
+      <div className="flex justify-between">
+        <Button type="button" onClick={onBack}>
+          Back
+        </Button>
+        <Button type="submit">Submit</Button>
+      </div>
+    </form>
+  );
+};
+
+export default AuthModal;

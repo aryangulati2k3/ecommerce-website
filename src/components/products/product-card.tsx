@@ -27,7 +27,7 @@ export default function ProductCard({ product }: { product: Product }) {
             </CardDescription>
           </CardHeader>
           <CardContent className="flex items-center justify-center">
-            <div className="md:h-50 relative h-20 w-full sm:h-48 lg:h-64">
+            <div className="relative h-20 w-full sm:h-48 md:h-50 lg:h-64">
               <Image
                 src={product.image}
                 alt={product.title}

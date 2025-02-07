@@ -55,7 +55,7 @@ export default function HeroCarousel() {
                   height={600}
                   className="w-full rounded-lg object-contain"
                 />
-                <div className="absolute inset-0 flex flex-col items-center justify-center bg-[hsla(0,0%,0%,0.8)] px-4 text-center">
+                <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/40 px-4 text-center">
                   <h2 className="text-2xl font-bold text-white md:text-3xl">
                     {title}
                   </h2>

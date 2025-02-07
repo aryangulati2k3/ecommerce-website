@@ -19,16 +19,16 @@ export default function Cart() {
       {state.items.length === 0 ? (
         <div className="flex flex-col items-center text-center">
           <p className="text-gray-600">Your cart is empty.</p>
-          <ShoppingCart className="h-30 w-30 mt-6 opacity-50" />
+          <ShoppingCart className="mt-6 h-30 w-30 opacity-50" />
         </div>
       ) : (
         <div className="space-y-4">
           {state.items.map(({ product, quantity }) => (
             <div
               key={product.id}
-              className="flex items-center rounded-lg border border-gray-200 p-4 shadow-sm"
+              className="flex items-center rounded-lg border border-gray-200 p-4 shadow-xs"
             >
-              <div className="relative h-16 w-16 flex-shrink-0">
+              <div className="relative h-16 w-16 shrink-0">
                 <Image
                   src={product.image}
                   alt={product.title}
@@ -36,8 +36,10 @@ export default function Cart() {
                   className="rounded object-contain"
                 />
               </div>
-              <div className="ml-4 flex-grow">
-                <h3 className="text-md font-semibold line-clamp-2">{product.title}</h3>
+              <div className="ml-4 grow">
+                <h3 className="text-md line-clamp-2 font-semibold">
+                  {product.title}
+                </h3>
                 <p className="text-gray-600">${product.price.toFixed(2)}</p>
               </div>
               <div className="flex items-center space-x-2">

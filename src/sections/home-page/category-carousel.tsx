@@ -63,7 +63,7 @@ export default function CategoryCarousel() {
           href={`/categories/${category}`}
           className="flex flex-col items-center"
         >
-          <div className="md:w-50 md:h-50 flex h-28 w-28 items-center justify-center rounded-full border-blue-100 bg-white p-4 shadow-lg sm:h-32 sm:w-32 lg:h-60 lg:w-60">
+          <div className="flex h-30 w-30 items-center justify-center rounded-full border border-gray-400 bg-white p-4 shadow-lg">
             <div className="flex aspect-square h-20 w-20 items-center justify-center">
               {categoryImages[category] ? (
                 <Image
