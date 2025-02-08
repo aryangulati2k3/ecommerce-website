@@ -9,7 +9,7 @@ import { Search, X } from 'lucide-react';
 // ─── CUSTOM HOOK: Placeholder Typing Effect ───────────────────────────────
 const useTypingEffect = (categories: string[]) => {
   const [typedPlaceholder, setTypedPlaceholder] = useState(
-    'Search for "Products"',
+    'Search for "products"',
   );
 
   useEffect(() => {
@@ -213,7 +213,7 @@ export default function Searchbar() {
     <>
       {isMobile ? (
         // ── MOBILE VIEW: Show a clickable search preview that opens fullscreen ─
-        <div className="mx-auto w-full max-w-lg px-4 lg:pt-4">
+        <div className="mx-auto w-full max-w-lg px-2 lg:pt-4">
           <div
             className="flex cursor-pointer items-center rounded-full bg-gray-100 p-2 px-4 shadow-xs"
             onClick={() => {
@@ -223,8 +223,8 @@ export default function Searchbar() {
               setSelectedIndex(-1);
             }}
           >
-            <Search className="h-5 w-5 text-gray-500" />
-            <span className="ml-2 line-clamp-1 flex-1 text-gray-500">
+            <Search className="h-4 w-4 text-gray-500" />
+            <span className="ml-2 line-clamp-1 flex-1 text-gray-500 w-25">
               {typedPlaceholder}
             </span>
           </div>

@@ -21,7 +21,7 @@ const AuthButton: React.FC = () => {
     <>
       <button
         onClick={() => setIsModalOpen(true)}
-        className="flex flex-col items-center text-white cursor-pointer"
+        className="flex cursor-pointer flex-col items-center text-white"
       >
         <User className="h-6 w-6" />
         <span className="mt-1 text-xs">Sign In</span>
