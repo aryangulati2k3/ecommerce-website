@@ -3,7 +3,7 @@
 import React from 'react';
 import { useCart } from '@/context/cart-context';
 import Image from 'next/image';
-import { ShoppingCart } from 'lucide-react';
+import { ShoppingCart, X } from 'lucide-react';
 
 export default function Cart() {
   const { state, dispatch } = useCart();
@@ -14,7 +14,7 @@ export default function Cart() {
   );
 
   return (
-    <div className="mx-auto my-8 min-h-[75vh] max-w-4xl bg-white p-6">
+    <div className="mx-auto my-8 flex min-h-[75vh] max-w-4xl flex-col bg-white p-6">
       <h2 className="mb-6 text-center text-2xl font-bold">My Cart</h2>
       {state.items.length === 0 ? (
         <div className="flex flex-col items-center text-center">
@@ -42,7 +42,7 @@ export default function Cart() {
                 </h3>
                 <p className="text-gray-600">${product.price.toFixed(2)}</p>
               </div>
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-2 rounded-lg border">
                 <button
                   onClick={() =>
                     dispatch({
@@ -52,7 +52,7 @@ export default function Cart() {
                     })
                   }
                   disabled={quantity <= 1}
-                  className="rounded border px-3 py-1 hover:bg-gray-100 disabled:opacity-50"
+                  className="rounded-l-lg border-r border-l-0 px-3 py-1 hover:bg-gray-200 disabled:opacity-30"
                 >
                   –
                 </button>
@@ -65,7 +65,7 @@ export default function Cart() {
                       quantity: quantity + 1,
                     })
                   }
-                  className="rounded border px-3 py-1 hover:bg-gray-100"
+                  className="rounded-r-lg border-r-0 border-l px-3 py-1 hover:bg-gray-200"
                 >
                   +
                 </button>
@@ -79,7 +79,7 @@ export default function Cart() {
                   })
                 }
               >
-                Remove
+                <X />
               </button>
             </div>
           ))}
@@ -91,7 +91,7 @@ export default function Cart() {
             Total: ${totalPrice.toFixed(2)}
           </h3>
           <button
-            className="mt-4 rounded-lg bg-blue-500 px-6 py-2 text-white transition-colors hover:bg-blue-600 md:mt-0"
+            className="mt-4 rounded-lg border px-6 py-2 transition-colors hover:bg-gray-200 md:mt-0"
             onClick={() => dispatch({ type: 'CLEAR_CART' })}
           >
             Clear Cart
