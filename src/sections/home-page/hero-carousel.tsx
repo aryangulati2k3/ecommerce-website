@@ -51,11 +51,10 @@ export default function HeroCarousel() {
                 <Image
                   src={image}
                   alt={title}
-                  width={1400}
-                  height={600}
-                  className="w-full rounded-lg object-contain"
+                  fill
+                  className="h-full w-full rounded-lg object-cover"
                 />
-                <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/40 px-4 text-center">
+                <div className="absolute inset-0 flex flex-col items-center justify-center rounded-lg bg-black/40 px-4 text-center">
                   <h2 className="text-2xl font-bold text-white md:text-3xl">
                     {title}
                   </h2>

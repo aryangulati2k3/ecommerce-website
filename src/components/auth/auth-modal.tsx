@@ -62,27 +62,29 @@ const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
   };
 
   return (
-    <div
-      className="relative w-full max-w-md rounded bg-white p-6 shadow-lg"
-      role="dialog"
-      aria-modal="true"
-      tabIndex={-1}
-    >
-      {/* Close button */}
-      <button
-        className="absolute top-2 right-2 text-2xl leading-none text-gray-500 hover:text-gray-700"
-        onClick={onClose}
-        aria-label="Close modal"
+    <div className="fixed inset-0 z-50 flex min-h-screen items-center justify-center bg-black/50">
+      <div
+        className="relative mx-4 w-full max-w-md rounded bg-white p-6 shadow-lg"
+        role="dialog"
+        aria-modal="true"
+        tabIndex={-1}
       >
-        &times;
-      </button>
+        {/* Close button */}
+        <button
+          className="absolute top-2 right-2 text-2xl leading-none text-gray-500 hover:text-gray-700"
+          onClick={onClose}
+          aria-label="Close modal"
+        >
+          &times;
+        </button>
 
-      {step === 1 && <StepOne onNext={nextStep} />}
-      {step === 2 && <StepTwo onNext={nextStep} onBack={() => setStep(1)} />}
-      {step === 3 && (
-        <StepThree onSubmit={handleFinalSubmit} onBack={() => setStep(2)} />
-      )}
-      {step === 4 && <StepFour onClose={onClose} />}
+        {step === 1 && <StepOne onNext={nextStep} />}
+        {step === 2 && <StepTwo onNext={nextStep} onBack={() => setStep(1)} />}
+        {step === 3 && (
+          <StepThree onSubmit={handleFinalSubmit} onBack={() => setStep(2)} />
+        )}
+        {step === 4 && <StepFour onClose={onClose} />}
+      </div>
     </div>
   );
 };
