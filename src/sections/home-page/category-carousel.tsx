@@ -48,13 +48,16 @@ export default function CategorySection() {
   // Memoize category items so they're only recalculated when dependencies change
   const categoryItems = useMemo(() => {
     return categories.map((category) => (
-      <div key={category} className="justify-between flex flex-col items-center">
+      <div
+        key={category}
+        className="flex flex-col items-center justify-between"
+      >
         <Link
           href={`/categories/${category}`}
           className="flex flex-col items-center"
         >
-          <div className="flex h-20 w-20 md:h-32 md:w-32 items-center justify-center rounded-full border border-gray-400 bg-white p-4 shadow-lg">
-            <div className="flex aspect-square w-12 h-12 md:h-20 md:w-20 items-center justify-center">
+          <div className="flex h-20 w-20 items-center justify-center rounded-full border border-gray-400 bg-white p-4 shadow-lg md:h-32 md:w-32">
+            <div className="flex aspect-square h-12 w-12 items-center justify-center md:h-20 md:w-20">
               {categoryImages[category] ? (
                 <Image
                   src={categoryImages[category]}
@@ -79,11 +82,9 @@ export default function CategorySection() {
   }, [categories, categoryImages]);
 
   return (
-    <div className="mx-auto w-full md:w-[60vw] px-4 pt-4">
+    <div className="mx-auto w-full px-4 pt-4 md:w-[60vw]">
       <h2 className="mb-4 text-center text-3xl font-bold">Shop by Category</h2>
-      <div className="grid grid-cols-4 gap-8">
-        {categoryItems}
-      </div>
+      <div className="grid grid-cols-4 gap-8">{categoryItems}</div>
     </div>
   );
 }
