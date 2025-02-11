@@ -28,3 +28,11 @@ export async function fetchCategories(): Promise<string[]> {
   }
   return response.json();
 }
+
+export async function fetchProductsByCategory(category: string): Promise<Product[]> {
+  const response = await fetch(`https://fakestoreapi.com/products/category/${encodeURIComponent(category)}`);
+  if (!response.ok) {
+    throw new Error(`Failed to fetch products for category: ${category}`);
+  }
+  return response.json();
+}
