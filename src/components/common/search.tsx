@@ -224,7 +224,7 @@ export default function Searchbar() {
             }}
           >
             <Search className="h-4 w-4 text-gray-500" />
-            <span className="ml-2 line-clamp-1 flex-1 text-gray-500 w-25">
+            <span className="ml-2 line-clamp-1 w-25 flex-1 text-gray-500">
               {typedPlaceholder}
             </span>
           </div>

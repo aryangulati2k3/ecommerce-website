@@ -56,7 +56,7 @@ export default function CategorySection() {
           href={`/categories/${category}`}
           className="flex flex-col items-center"
         >
-          <div className="flex h-20 w-20 items-center justify-center rounded-full border border-gray-400 bg-white p-4 shadow-lg md:h-32 md:w-32">
+          <div className="flex h-20 w-20 items-center justify-center rounded-full border bg-white p-4 shadow-lg md:h-32 md:w-32">
             <div className="flex aspect-square h-12 w-12 items-center justify-center md:h-20 md:w-20">
               {categoryImages[category] ? (
                 <Image

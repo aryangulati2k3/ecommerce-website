@@ -65,7 +65,7 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
 
   // If the item is in the cart, show the quantity control.
   return (
-    <div className="flex flex-row w-full items-center justify-between rounded-lg border border-gray-300">
+    <div className="flex w-full flex-row items-center justify-between rounded-lg border border-gray-300">
       <Button
         onClick={handleDecrement}
         className="min-w-0 flex-1 rounded-l-lg rounded-r-none bg-transparent text-lg text-black hover:bg-gray-200"
