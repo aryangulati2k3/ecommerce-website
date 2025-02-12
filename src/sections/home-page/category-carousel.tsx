@@ -1,70 +1,46 @@
-'use client';
+"use client";
 
-import Image from 'next/image';
-import Link from 'next/link';
-import { useEffect, useState, useMemo } from 'react';
-import { fetchCategories, fetchProducts } from '@/lib/api';
+import Image from "next/image";
+import Link from "next/link";
+import { useEffect, useState, useMemo } from "react";
+import { fetchCategories } from "@/lib/api";
+
+const categoryImagesMap: Record<string, string> = {
+  "electronics": "/assets/home/categories-section/electronics.jpg",
+  "jewelery": "/assets/home/categories-section/jewellery.jpg",
+  "men's clothing": "/assets/home/categories-section/men.jpg",
+  "women's clothing": "/assets/home/categories-section/women.jpg",
+};
 
 export default function CategorySection() {
   const [categories, setCategories] = useState<string[]>([]);
-  const [categoryImages, setCategoryImages] = useState<Record<string, string>>(
-    {},
-  );
 
   useEffect(() => {
-    const loadData = async () => {
+    const loadCategories = async () => {
       try {
-        // Fetch categories and products concurrently
-        const [categoryList, products] = await Promise.all([
-          fetchCategories(),
-          fetchProducts(),
-        ]);
-
+        const categoryList = await fetchCategories();
         setCategories(categoryList);
-
-        // Build a map from category to the first product's image
-        const categoryImagesMap = categoryList.reduce(
-          (acc, category) => {
-            const firstProduct = products.find(
-              (product) => product.category === category,
-            );
-            if (firstProduct) {
-              acc[category] = firstProduct.image;
-            }
-            return acc;
-          },
-          {} as Record<string, string>,
-        );
-
-        setCategoryImages(categoryImagesMap);
       } catch (error) {
-        console.error('Error fetching categories:', error);
+        console.error("Error fetching categories:", error);
       }
     };
 
-    loadData();
+    loadCategories();
   }, []);
 
-  // Memoize category items so they're only recalculated when dependencies change
   const categoryItems = useMemo(() => {
     return categories.map((category) => (
-      <div
-        key={category}
-        className="flex flex-col items-center justify-between"
-      >
-        <Link
-          href={`/categories/${category}`}
-          className="flex flex-col items-center"
-        >
-          <div className="flex h-20 w-20 items-center justify-center rounded-full border bg-white p-4 shadow-lg md:h-32 md:w-32">
-            <div className="flex aspect-square h-12 w-12 items-center justify-center md:h-20 md:w-20">
-              {categoryImages[category] ? (
+      <div key={category} className="flex flex-col items-center">
+        <Link href={`/categories/${category}`} className="flex flex-col items-center">
+          <div className="flex h-20 w-20 md:h-32 md:w-32 items-center justify-center rounded-full border bg-white p-4 shadow-lg">
+            <div className="flex aspect-square h-12 w-12 md:h-20 md:w-20 items-center justify-center">
+              {categoryImagesMap[category] ? (
                 <Image
-                  src={categoryImages[category]}
+                  src={categoryImagesMap[category]}
                   alt={category}
                   width={80}
                   height={80}
-                  className="h-full w-full object-contain"
+                  className="h-full w-full object-cover"
                 />
               ) : (
                 <div className="flex h-full w-full items-center justify-center rounded-full bg-gray-200">
@@ -73,18 +49,16 @@ export default function CategorySection() {
               )}
             </div>
           </div>
-          <p className="mt-2 text-center text-sm font-medium capitalize">
-            {category}
-          </p>
+          <p className="mt-2 text-center text-sm font-medium capitalize">{category}</p>
         </Link>
       </div>
     ));
-  }, [categories, categoryImages]);
+  }, [categories]);
 
   return (
     <div className="mx-auto w-full px-4 pt-4 md:w-[60vw]">
       <h2 className="mb-4 text-center text-3xl font-bold">Shop by Category</h2>
-      <div className="grid grid-cols-4 gap-8">{categoryItems}</div>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-8">{categoryItems}</div>
     </div>
   );
 }
