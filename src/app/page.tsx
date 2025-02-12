@@ -7,7 +7,7 @@ export default async function Home() {
   const products: Product[] = await fetchProducts();
 
   return (
-    <main className="w-full max-w-7xl container mx-auto flex flex-col justify-center px-4 py-8">
+    <main className="container mx-auto flex w-full max-w-7xl flex-col justify-center px-4 py-8">
       <HeroCarousel />
       <CategoryCarousel />
       <div className="grid grid-cols-2 gap-6 pt-4 md:grid-cols-3 lg:grid-cols-4">
