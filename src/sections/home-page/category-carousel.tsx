@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import Image from "next/image";
-import Link from "next/link";
-import { useEffect, useState, useMemo } from "react";
-import { fetchCategories } from "@/lib/api";
+import Image from 'next/image';
+import Link from 'next/link';
+import { useEffect, useState, useMemo } from 'react';
+import { fetchCategories } from '@/lib/api';
 
 const categoryImagesMap: Record<string, string> = {
-  "electronics": "/assets/home/categories-section/electronics.jpg",
-  "jewelery": "/assets/home/categories-section/jewellery.jpg",
-  "men's clothing": "/assets/home/categories-section/men.jpg",
-  "women's clothing": "/assets/home/categories-section/women.jpg",
+  electronics: '/assets/home/categories-section/electronics.jpg',
+  jewelery: '/assets/home/categories-section/jewellery.jpg',
+  "men's clothing": '/assets/home/categories-section/men.jpg',
+  "women's clothing": '/assets/home/categories-section/women.jpg',
 };
 
 export default function CategorySection() {
@@ -21,7 +21,7 @@ export default function CategorySection() {
         const categoryList = await fetchCategories();
         setCategories(categoryList);
       } catch (error) {
-        console.error("Error fetching categories:", error);
+        console.error('Error fetching categories:', error);
       }
     };
 
@@ -31,9 +31,12 @@ export default function CategorySection() {
   const categoryItems = useMemo(() => {
     return categories.map((category) => (
       <div key={category} className="flex flex-col items-center">
-        <Link href={`/categories/${category}`} className="flex flex-col items-center">
-          <div className="flex h-20 w-20 md:h-32 md:w-32 items-center justify-center rounded-full border bg-white p-4 shadow-lg">
-            <div className="flex aspect-square h-12 w-12 md:h-20 md:w-20 items-center justify-center">
+        <Link
+          href={`/categories/${category}`}
+          className="flex flex-col items-center"
+        >
+          <div className="flex h-20 w-20 items-center justify-center rounded-full border bg-white p-4 shadow-lg md:h-30 md:w-30">
+            <div className="flex aspect-square h-12 w-12 items-center justify-center md:h-20 md:w-20">
               {categoryImagesMap[category] ? (
                 <Image
                   src={categoryImagesMap[category]}
@@ -49,7 +52,9 @@ export default function CategorySection() {
               )}
             </div>
           </div>
-          <p className="mt-2 text-center text-sm font-medium capitalize">{category}</p>
+          <p className="mt-2 text-center text-sm font-medium capitalize">
+            {category}
+          </p>
         </Link>
       </div>
     ));
@@ -58,7 +63,12 @@ export default function CategorySection() {
   return (
     <div className="mx-auto w-full px-4 pt-4 md:w-[60vw]">
       <h2 className="mb-4 text-center text-3xl font-bold">Shop by Category</h2>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-8">{categoryItems}</div>
+      <div className="grid grid-cols-4 gap-8">
+        {categoryItems}
+      </div>
+      <div className="grid grid-cols-4 gap-8">
+        {categoryItems}
+      </div>
     </div>
   );
 }

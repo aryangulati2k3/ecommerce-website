@@ -9,6 +9,7 @@ export default async function Home() {
   return (
     <main className="container mx-auto flex w-full max-w-7xl flex-col justify-center px-4 py-8">
       <HeroCarousel />
+      
       <CategoryCarousel />
       <div className="grid grid-cols-2 gap-6 pt-4 md:grid-cols-3 lg:grid-cols-4">
         {products.map((product) => (
