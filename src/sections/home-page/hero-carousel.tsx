@@ -17,19 +17,19 @@ const slides = [
     image: '/assets/home/hero-section/macbook-image.jpeg',
     title: 'Upgrade Your Tech',
     subtitle: 'Explore the latest MacBooks with unbeatable deals',
-    link: '/categories/macbooks',
+    link: '/categories/electronics',
   },
   {
     image: '/assets/home/hero-section/shirts-image.jpeg',
     title: 'Style That Defines You',
     subtitle: 'Discover trendy shirts that make a statement',
-    link: '/categories/shirts',
+    link: `/categories/${encodeURIComponent("men's clothing")}`,
   },
   {
     image: '/assets/home/hero-section/watch-image.jpeg',
     title: 'Timeless Elegance',
     subtitle: 'Find the perfect watch to complement your style',
-    link: '/categories/watches',
+    link: '/categories/jewellery',
   },
 ];
 
