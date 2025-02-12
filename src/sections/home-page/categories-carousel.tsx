@@ -12,7 +12,7 @@ const categoryImagesMap: Record<string, string> = {
   "women's clothing": '/assets/home/categories-section/women.jpg',
 };
 
-export default function CategorySection() {
+export default function CategoriesSection() {
   const [categories, setCategories] = useState<string[]>([]);
 
   useEffect(() => {

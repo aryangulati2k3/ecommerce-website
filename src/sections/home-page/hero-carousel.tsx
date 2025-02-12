@@ -38,7 +38,7 @@ export default function HeroCarousel() {
   const autoplayPlugin = useMemo(() => Autoplay({ delay: 5000 }), []);
 
   return (
-    <div className="mx-auto w-full max-w-7xl px-4">
+    <div className="mx-auto w-full max-w-7xl rounded-lg">
       <Carousel
         opts={{ align: 'start', loop: true }}
         plugins={[autoplayPlugin]}
