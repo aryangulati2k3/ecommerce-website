@@ -31,7 +31,7 @@ export default function CategorySection({ category }: CategorySectionProps) {
   }, [category]);
 
   return (
-    <div className="bg-primary-color mt-8 mx-auto w-full max-w-7xl rounded-xl px-4 py-6">
+    <div className="bg-primary-color mx-auto mt-8 w-full max-w-7xl rounded-xl px-4 py-6">
       {/* Header */}
       <div className="mb-4 flex items-center justify-between">
         <h2 className="text-2xl font-bold text-white capitalize">
@@ -40,7 +40,7 @@ export default function CategorySection({ category }: CategorySectionProps) {
         <Link href={`/categories/${encodeURIComponent(category)}`}>
           <Button
             variant="secondary"
-            className="bg-white/20 text-white hover:bg-white/30 cursor-pointer"
+            className="cursor-pointer bg-white/20 text-white hover:bg-white/30"
           >
             View More
           </Button>

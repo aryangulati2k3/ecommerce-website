@@ -29,11 +29,11 @@ export default function CategoryPage() {
   }, [decodedCategory]);
 
   if (loading) {
-    return <p className="text-center text-lg">Loading...</p>;
+    return <p className="w-full min-h-screen justify-center text-center text-bold text-lg">Loading...</p>;
   }
 
   return (
-    <div className="mx-auto w-full max-w-7xl px-4 py-6">
+    <div className="mx-auto min-h-screen w-full max-w-7xl px-4 py-6">
       <h1 className="mb-6 text-center text-3xl font-bold capitalize">
         {decodedCategory}
       </h1>

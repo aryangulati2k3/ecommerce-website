@@ -11,7 +11,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useMemo } from 'react';
 
-// Define slides outside the component to avoid re-creation on every render.
 const slides = [
   {
     image: '/assets/home/hero-section/macbook-image.jpeg',
