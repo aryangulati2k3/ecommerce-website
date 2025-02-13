@@ -35,14 +35,14 @@ export default function CategoriesSection() {
           href={`/categories/${category}`}
           className="flex flex-col items-center"
         >
-          <div className="flex h-20 w-20 items-center justify-center rounded-full border bg-white p-4 shadow-lg md:h-30 md:w-30">
-            <div className="flex aspect-square h-12 w-12 items-center justify-center md:h-20 md:w-20">
+          <div className="flex h-18 w-18 items-center justify-center rounded-full bg-white p-4 md:h-28 md:w-28">
+            <div className="flex aspect-square h-14 w-14 items-center justify-center md:h-20 md:w-20">
               {categoryImagesMap[category] ? (
                 <Image
                   src={categoryImagesMap[category]}
                   alt={category}
-                  width={80}
-                  height={80}
+                  width={90}
+                  height={90}
                   className="h-full w-full object-cover"
                 />
               ) : (

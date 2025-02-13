@@ -35,7 +35,7 @@ export default function AltProductCard({ product }: { product: Product }) {
           </CardContent>
         </div>
         <CardFooter className="flex flex-row items-center justify-between gap-2 px-2 md:px-4">
-          <span className=" bg-red-600 px-1 py-1 text-xs font-semibold text-white">
+          <span className="bg-red-600 px-1 py-1 text-xs font-semibold text-white">
             {discount}% off
           </span>
           <span className="text-xs font-bold text-red-500 md:text-sm">
