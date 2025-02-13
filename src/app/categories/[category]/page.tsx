@@ -29,7 +29,11 @@ export default function CategoryPage() {
   }, [decodedCategory]);
 
   if (loading) {
-    return <p className="w-full min-h-screen justify-center text-center text-bold text-lg">Loading...</p>;
+    return (
+      <p className="text-bold min-h-screen w-full justify-center text-center text-lg">
+        Loading...
+      </p>
+    );
   }
 
   return (
