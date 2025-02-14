@@ -1,41 +1,44 @@
 'use client';
 
-import { useState } from 'react';
 import { useCart } from '@/context/cart-context';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import Link from 'next/link';
+import { useForm } from 'react-hook-form';
+
+interface CheckoutFormInputs {
+  name: string;
+  email: string;
+  street: string;
+  city: string;
+  zip: string;
+  country: string;
+  paymentMethod: string;
+}
 
 export default function CheckoutPage() {
   const { state, dispatch } = useCart();
   const router = useRouter();
 
-  const [form, setForm] = useState({
-    name: '',
-    email: '',
-    address: '',
-    paymentMethod: 'card',
-  });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<CheckoutFormInputs>();
 
   const totalPrice = state.items.reduce(
     (sum, item) => sum + item.product.price * item.quantity,
     0,
   );
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
-  ) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+  const onSubmit = (data: CheckoutFormInputs) => {
+    const orderDetails = {
+      ...data,
+      items: state.items,
+      totalPrice,
+    };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!form.name || !form.email || !form.address) {
-      alert('Please fill out all required fields.');
-      return;
-    }
+    localStorage.setItem('orderDetails', JSON.stringify(orderDetails));
 
-    alert('Payment successful! Your order has been placed.');
     dispatch({ type: 'CLEAR_CART' });
     router.push('/thank-you');
   };
@@ -47,13 +50,10 @@ export default function CheckoutPage() {
       {state.items.length === 0 ? (
         <div className="text-center">
           <p className="text-gray-600">Your cart is empty.</p>
-          <Link href="/" className="mt-4 text-blue-500 hover:underline">
-            Continue Shopping
-          </Link>
         </div>
       ) : (
         <>
-          {/* Cart Summary */}
+          {/* Order Summary */}
           <div className="mb-6 rounded-lg border p-4 shadow-md">
             <h3 className="mb-4 text-lg font-bold">Order Summary</h3>
             <div className="space-y-4">
@@ -85,42 +85,73 @@ export default function CheckoutPage() {
           </div>
 
           {/* Checkout Form */}
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <h3 className="text-lg font-bold">Shipping Details</h3>
+
             <input
               type="text"
-              name="name"
+              {...register('name', { required: 'Full name is required' })}
               placeholder="Full Name"
-              value={form.name}
-              onChange={handleChange}
               className="w-full rounded border p-2"
-              required
             />
+            {errors.name && (
+              <p className="text-red-500">{errors.name.message}</p>
+            )}
+
             <input
               type="email"
-              name="email"
+              {...register('email', { required: 'Email is required' })}
               placeholder="Email Address"
-              value={form.email}
-              onChange={handleChange}
               className="w-full rounded border p-2"
-              required
             />
+            {errors.email && (
+              <p className="text-red-500">{errors.email.message}</p>
+            )}
+
+            {/* Address Fields */}
+            <h3 className="text-lg font-bold">Shipping Address</h3>
             <input
               type="text"
-              name="address"
-              placeholder="Shipping Address"
-              value={form.address}
-              onChange={handleChange}
+              {...register('street', { required: 'Street is required' })}
+              placeholder="Street Address"
               className="w-full rounded border p-2"
-              required
             />
+            {errors.street && (
+              <p className="text-red-500">{errors.street.message}</p>
+            )}
+
+            <input
+              type="text"
+              {...register('city', { required: 'City is required' })}
+              placeholder="City"
+              className="w-full rounded border p-2"
+            />
+            {errors.city && (
+              <p className="text-red-500">{errors.city.message}</p>
+            )}
+
+            <input
+              type="text"
+              {...register('zip', { required: 'Zip Code is required' })}
+              placeholder="Zip Code"
+              className="w-full rounded border p-2"
+            />
+            {errors.zip && <p className="text-red-500">{errors.zip.message}</p>}
+
+            <input
+              type="text"
+              {...register('country', { required: 'Country is required' })}
+              placeholder="Country"
+              className="w-full rounded border p-2"
+            />
+            {errors.country && (
+              <p className="text-red-500">{errors.country.message}</p>
+            )}
 
             {/* Payment Method */}
             <h3 className="text-lg font-bold">Payment Method</h3>
             <select
-              name="paymentMethod"
-              value={form.paymentMethod}
-              onChange={handleChange}
+              {...register('paymentMethod')}
               className="w-full rounded border p-2"
             >
               <option value="card">Credit / Debit Card</option>
