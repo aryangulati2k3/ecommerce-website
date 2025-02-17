@@ -11,7 +11,8 @@ export default async function Home() {
       <CategoryCarousel />
       <CategorySection category="electronics" />
       <DealsSection />
-      <AltCategorySection category="women's clothing"/>
+      <AltCategorySection category="women's clothing" />
+      <CategorySection category="men's clothing" />
     </main>
   );
 }

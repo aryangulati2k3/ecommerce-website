@@ -34,7 +34,7 @@ export default function CategorySection({ category }: CategorySectionProps) {
     <div className="bg-primary-color mx-auto mt-8 w-full max-w-7xl rounded-xl px-4 py-6">
       {/* Header */}
       <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-white capitalize">
+        <h2 className="text-xl font-bold text-white capitalize md:text-2xl">
           Explore {category}
         </h2>
         <Link href={`/categories/${encodeURIComponent(category)}`}>

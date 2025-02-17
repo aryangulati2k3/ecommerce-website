@@ -62,7 +62,9 @@ export default function CategoriesSection() {
 
   return (
     <div className="mx-auto w-full px-4 pt-4 md:w-[60vw]">
-      <h2 className="mb-4 text-center text-3xl font-bold">Shop by Category</h2>
+      <h2 className="mb-2 text-center text-xl font-bold md:text-2xl">
+        Shop by Category
+      </h2>
       <div className="mb-2 grid grid-cols-4 gap-8">{categoryItems}</div>
       {/* Remove */}
       <div className="grid grid-cols-4 gap-8">{categoryItems}</div>

@@ -57,7 +57,11 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
   // If the item is not in the cart, show the "Add to Cart" button.
   if (!cartItem) {
     return (
-      <Button variant="outline" className="w-full py-2" onClick={handleAdd}>
+      <Button
+        variant="outline"
+        className="w-full py-1 text-xs"
+        onClick={handleAdd}
+      >
         Add to Cart
       </Button>
     );
@@ -65,17 +69,17 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
 
   // If the item is in the cart, show the quantity control.
   return (
-    <div className="flex w-full flex-row items-center justify-between rounded-lg border border-gray-300">
+    <div className="flex w-full flex-row items-center justify-between rounded-lg border border-gray-300 bg-white text-xs text-black">
       <Button
         onClick={handleDecrement}
-        className="min-w-0 flex-1 rounded-l-lg rounded-r-none bg-transparent text-lg text-black hover:bg-gray-200"
+        className="min-w-0 flex-1 rounded-l-lg rounded-r-none bg-white text-xs text-black hover:bg-gray-200"
       >
         –
       </Button>
       <span className="px-2 text-center">{cartItem.quantity}</span>
       <Button
         onClick={handleIncrement}
-        className="min-w-0 flex-1 rounded-l-none rounded-r-lg bg-transparent text-lg text-black hover:bg-gray-200"
+        className="min-w-0 flex-1 rounded-l-none rounded-r-lg bg-white text-xs text-black hover:bg-gray-200"
       >
         +
       </Button>

@@ -16,10 +16,10 @@ import { Product } from '@/lib/api';
 export default function ProductCard({ product }: { product: Product }) {
   return (
     <Link href={`/products/${product.id}`} passHref>
-      <Card className="flex h-full w-full max-w-xs flex-col justify-between sm:max-w-sm md:max-w-md lg:max-w-lg">
+      <Card className="flex h-70 w-full max-w-xs flex-col justify-between sm:max-w-sm md:h-90 md:max-w-md lg:max-w-lg">
         <div>
           <CardHeader>
-            <CardTitle className="line-clamp-2 text-lg md:text-xl">
+            <CardTitle className="line-clamp-2 text-base md:text-xl">
               {product.title}
             </CardTitle>
             <CardDescription className="text-gray-600">
@@ -27,7 +27,7 @@ export default function ProductCard({ product }: { product: Product }) {
             </CardDescription>
           </CardHeader>
           <CardContent className="flex items-center justify-center">
-            <div className="relative h-20 w-full sm:h-48 md:h-50 lg:h-64">
+            <div className="relative h-20 w-full md:h-30 lg:h-30">
               <Image
                 src={product.image}
                 alt={product.title}

@@ -9,7 +9,9 @@ interface CategoryProductsSectionProps {
   category: string;
 }
 
-export default function AltCategorySection({ category }: CategoryProductsSectionProps) {
+export default function AltCategorySection({
+  category,
+}: CategoryProductsSectionProps) {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -31,7 +33,7 @@ export default function AltCategorySection({ category }: CategoryProductsSection
   return (
     <div className="bg-primary-color mx-auto mt-8 w-full max-w-7xl rounded-xl px-4 py-6">
       {/* Header */}
-      <h2 className="mb-4 text-2xl font-bold text-white capitalize">
+      <h2 className="mb-4 text-xl font-bold text-white capitalize md:text-2xl">
         Explore {category}
       </h2>
 
@@ -41,9 +43,12 @@ export default function AltCategorySection({ category }: CategoryProductsSection
       ) : (
         <div className="relative">
           {/* Scrollable Product Container */}
-          <div className="flex w-full gap-4 overflow-x-auto pb-4 scrollbar-hide">
+          <div className="scrollbar-hide flex w-full gap-4 overflow-x-auto pb-4">
             {products.map((product) => (
-              <div key={product.id} className="flex-shrink-0 w-48 sm:w-56 md:w-64 lg:w-72">
+              <div
+                key={product.id}
+                className="w-48 flex-shrink-0 sm:w-56 md:w-64 lg:w-72"
+              >
                 <ProductCard product={product} />
               </div>
             ))}

@@ -28,7 +28,7 @@ export default function DealsSection() {
   return (
     <div className="mx-auto w-full max-w-7xl py-6">
       <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-2xl font-bold">Deals for you</h2>
+        <h2 className="text-xl font-bold md:text-2xl">Deals for you</h2>
         <Link href="/products" className="text-blue-500 hover:underline">
           See all deals
         </Link>

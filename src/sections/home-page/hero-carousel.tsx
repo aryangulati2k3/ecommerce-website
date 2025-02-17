@@ -54,7 +54,7 @@ export default function HeroCarousel() {
                   className="h-full w-full rounded-lg object-cover"
                 />
                 <div className="absolute inset-0 flex flex-col items-center justify-center rounded-lg bg-black/40 px-4 text-center">
-                  <h2 className="text-2xl font-bold text-white md:text-3xl">
+                  <h2 className="text-xl font-bold text-white md:text-2xl">
                     {title}
                   </h2>
                   <p className="mt-2 text-sm text-white md:text-lg">
