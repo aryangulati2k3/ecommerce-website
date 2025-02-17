@@ -25,7 +25,7 @@ export default function Cart() {
   };
 
   return (
-    <div className="mx-auto my-8 flex min-h-[75vh] max-w-4xl flex-col bg-white p-6">
+    <div className="mx-auto mt-14 flex h-screen min-h-[75vh] max-w-4xl flex-col bg-white p-6">
       <h2 className="mb-6 text-center text-2xl font-bold">My Cart</h2>
       {state.items.length === 0 ? (
         <div className="flex flex-col items-center text-center">

@@ -15,14 +15,14 @@ export default async function ProductPage({
 
   if (!product) {
     return (
-      <div className="flex min-h-screen items-center justify-center text-xl text-gray-700">
+      <div className="mt-14 flex min-h-screen items-center justify-center text-xl text-gray-700">
         Product not found
       </div>
     );
   }
 
   return (
-    <main className="container mx-auto px-4 py-8">
+    <main className="container mx-auto mt-14 px-4 py-8">
       <div className="flex flex-col overflow-hidden bg-white md:flex-row">
         {/* Image Section */}
         <div className="relative h-64 md:h-auto md:w-1/2">

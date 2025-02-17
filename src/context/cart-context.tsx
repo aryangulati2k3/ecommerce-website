@@ -1,40 +1,22 @@
-// src/context/cart-context.tsx
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 'use client';
 
-import React, { createContext, useReducer, useContext, ReactNode } from 'react';
+import React, {
+  createContext,
+  useReducer,
+  useContext,
+  ReactNode,
+  useEffect,
+} from 'react';
 
-export interface Product {
-  id: number;
-  title: string;
-  price: number;
-  description: string;
-  category: string;
-  image: string;
-  rating: {
-    rate: number;
-    count: number;
-  };
-}
-
-export type CartItem = {
-  product: Product;
-  quantity: number;
-};
-
-interface CartState {
-  items: CartItem[];
-}
-
-type CartAction =
-  | { type: 'ADD_TO_CART'; product: Product }
-  | { type: 'REMOVE_FROM_CART'; productId: number }
-  | { type: 'UPDATE_QUANTITY'; productId: number; quantity: number }
-  | { type: 'CLEAR_CART' };
-
-interface CartContextProps {
-  state: CartState;
-  dispatch: React.Dispatch<CartAction>;
-}
+import type {
+  Product,
+  CartItem,
+  CartState,
+  CartAction,
+  CartContextProps,
+} from '@/lib/api';
 
 const CartContext = createContext<CartContextProps | undefined>(undefined);
 
@@ -83,7 +65,22 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
 };
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
-  const [state, dispatch] = useReducer(cartReducer, { items: [] });
+  const [state, dispatch] = useReducer(
+    cartReducer,
+    { items: [] },
+    (initialState) => {
+      if (typeof window !== 'undefined') {
+        const stored = localStorage.getItem('cart');
+        return stored ? JSON.parse(stored) : initialState;
+      }
+      return initialState;
+    },
+  );
+
+  useEffect(() => {
+    localStorage.setItem('cart', JSON.stringify(state));
+  }, [state]);
+
   return (
     <CartContext.Provider value={{ state, dispatch }}>
       {children}

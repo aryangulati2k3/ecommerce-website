@@ -26,7 +26,7 @@ export default function ThankYouPage() {
   }, []);
 
   return (
-    <div className="mx-auto flex min-h-[75vh] w-full max-w-3xl flex-col items-center justify-center p-6 text-center">
+    <div className="mx-auto flex min-h-screen w-full max-w-3xl flex-col items-center justify-center p-6 text-center">
       <h2 className="mb-4 text-3xl font-bold text-green-600">
         🎉 Order Placed!
       </h2>

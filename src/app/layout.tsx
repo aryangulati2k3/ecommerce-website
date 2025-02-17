@@ -4,7 +4,7 @@ import './globals.css';
 
 import Header from '@/components/common/header';
 import Footer from '@/components/common/footer';
-import { CartProvider } from '@/context/cart-context'; // Adjust the path as needed
+import { CartProvider } from '@/context/cart-context';
 
 export const metadata: Metadata = {
   title: 'E-commerce Website UI',
@@ -23,8 +23,8 @@ export default function RootLayout({
         <CartProvider>
           <Header />
           {children}
-          <Footer />
         </CartProvider>
+        <Footer />
       </body>
     </html>
   );

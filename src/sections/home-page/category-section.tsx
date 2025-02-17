@@ -1,6 +1,3 @@
-'use client';
-
-import { useEffect, useState } from 'react';
 import { fetchProductsByCategory } from '@/lib/api';
 import ProductCard from '@/components/products/product-card';
 import Link from 'next/link';
@@ -11,27 +8,20 @@ interface CategorySectionProps {
   category: string;
 }
 
-export default function CategorySection({ category }: CategorySectionProps) {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
+export default async function CategorySection({
+  category,
+}: CategorySectionProps) {
+  let products: Product[] = [];
 
-  useEffect(() => {
-    const loadProducts = async () => {
-      try {
-        const categoryProducts = await fetchProductsByCategory(category);
-        setProducts(categoryProducts.slice(0, 4));
-      } catch (error) {
-        console.error('Error fetching products:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadProducts();
-  }, [category]);
+  try {
+    const categoryProducts = await fetchProductsByCategory(category);
+    products = categoryProducts.slice(0, 4);
+  } catch (error) {
+    console.error('Error fetching products:', error);
+  }
 
   return (
-    <div className="bg-primary-color mx-auto mt-8 w-full max-w-7xl rounded-xl px-4 py-6">
+    <section className="bg-primary-color mx-auto mt-8 w-full max-w-7xl rounded-xl px-4 py-6">
       {/* Header */}
       <div className="mb-4 flex items-center justify-between">
         <h2 className="text-xl font-bold text-white capitalize md:text-2xl">
@@ -48,8 +38,8 @@ export default function CategorySection({ category }: CategorySectionProps) {
       </div>
 
       {/* Products Grid */}
-      {loading ? (
-        <p className="text-center text-white">Loading products...</p>
+      {products.length === 0 ? (
+        <p className="text-center text-white">No products found.</p>
       ) : (
         <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
           {products.map((product) => (
@@ -57,6 +47,6 @@ export default function CategorySection({ category }: CategorySectionProps) {
           ))}
         </div>
       )}
-    </div>
+    </section>
   );
 }

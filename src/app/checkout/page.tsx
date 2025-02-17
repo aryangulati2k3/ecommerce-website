@@ -44,7 +44,7 @@ export default function CheckoutPage() {
   };
 
   return (
-    <div className="mx-auto w-full max-w-4xl p-6">
+    <div className="mx-auto mt-14 min-h-screen w-full max-w-4xl p-6">
       <h2 className="mb-6 text-center text-2xl font-bold">Checkout</h2>
 
       {state.items.length === 0 ? (

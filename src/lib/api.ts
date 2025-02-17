@@ -13,6 +13,26 @@ export interface Product {
   rating: Rating;
 }
 
+export type CartItem = {
+  product: Product;
+  quantity: number;
+};
+
+export interface CartState {
+  items: CartItem[];
+}
+
+export type CartAction =
+  | { type: 'ADD_TO_CART'; product: Product }
+  | { type: 'REMOVE_FROM_CART'; productId: number }
+  | { type: 'UPDATE_QUANTITY'; productId: number; quantity: number }
+  | { type: 'CLEAR_CART' };
+
+export interface CartContextProps {
+  state: CartState;
+  dispatch: React.Dispatch<CartAction>;
+}
+
 export async function fetchProducts(): Promise<Product[]> {
   const response = await fetch('https://fakestoreapi.com/products');
   if (!response.ok) {
