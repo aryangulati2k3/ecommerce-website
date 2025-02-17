@@ -7,9 +7,9 @@ import Footer from '@/components/common/footer';
 import { CartProvider } from '@/context/cart-context';
 
 export const metadata: Metadata = {
-  title: 'E-commerce Website UI',
+  title: 'ShopDemo - Demo Website',
   description:
-    'A dummy e-commerce website using Fake Store API to display PDPs and PLPs.',
+    'A dummy e-commerce website acting as a prototype.',
 };
 
 export default function RootLayout({
