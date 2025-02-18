@@ -3,6 +3,7 @@ import CategoryCarousel from '@/sections/home-page/categories-carousel';
 import CategorySection from '@/sections/home-page/category-section';
 import DealsSection from '@/sections/home-page/deals-section';
 import AltCategorySection from '@/sections/home-page/alt-category-section';
+import CTASection from '@/sections/home-page/cta-section';
 
 export default async function Home() {
   return (
@@ -12,7 +13,7 @@ export default async function Home() {
       <CategorySection category="electronics" />
       <DealsSection />
       <AltCategorySection category="women's clothing" />
-      <CategorySection category="men's clothing" />
+      <CTASection/>
     </main>
   );
 }

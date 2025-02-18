@@ -8,8 +8,7 @@ import { CartProvider } from '@/context/cart-context';
 
 export const metadata: Metadata = {
   title: 'ShopDemo - Demo Website',
-  description:
-    'A dummy e-commerce website acting as a prototype.',
+  description: 'A dummy e-commerce website acting as a prototype.',
 };
 
 export default function RootLayout({
