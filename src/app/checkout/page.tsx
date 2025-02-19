@@ -44,7 +44,7 @@ export default function CheckoutPage() {
   };
 
   return (
-    <div className="mx-auto mt-14 min-h-screen w-full max-w-4xl p-6">
+    <main className="mx-auto mt-0 min-h-screen w-full max-w-4xl p-6 md:mt-14">
       <h2 className="mb-6 text-center text-2xl font-bold">Checkout</h2>
 
       {state.items.length === 0 ? (
@@ -169,6 +169,6 @@ export default function CheckoutPage() {
           </form>
         </>
       )}
-    </div>
+    </main>
   );
 }

@@ -5,6 +5,7 @@ import './globals.css';
 import Header from '@/components/common/header';
 import Footer from '@/components/common/footer';
 import { CartProvider } from '@/context/cart-context';
+import MobileNavbar from '@/components/common/mobile-nav';
 
 export const metadata: Metadata = {
   title: 'ShopDemo - Demo Website',
@@ -21,6 +22,7 @@ export default function RootLayout({
       <body className="antialiased">
         <CartProvider>
           <Header />
+          <MobileNavbar />
           {children}
         </CartProvider>
         <Footer />

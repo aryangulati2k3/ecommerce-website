@@ -30,14 +30,14 @@ export default function CategoryPage() {
 
   if (loading) {
     return (
-      <p className="text-bold mt-14 min-h-screen w-full justify-center text-center text-lg">
+      <p className="text-bold min-h-screen w-full justify-center text-center text-lg">
         Loading...
       </p>
     );
   }
 
   return (
-    <div className="mx-auto mt-14 min-h-screen w-full max-w-7xl px-4 py-6">
+    <main className="mx-auto mt-0 min-h-screen w-full max-w-7xl px-4 py-6 md:mt-14">
       <h1 className="mb-6 text-center text-3xl font-bold capitalize">
         {decodedCategory}
       </h1>
@@ -53,6 +53,6 @@ export default function CategoryPage() {
           ))}
         </div>
       )}
-    </div>
+    </main>
   );
 }

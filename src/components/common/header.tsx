@@ -25,13 +25,10 @@ export default function Header() {
   });
 
   return (
-    <header className="bg-primary-color fixed top-0 right-0 left-0 z-50 flex items-center justify-between px-4 py-3 shadow-xl">
+    <header className="bg-primary-color relative top-0 right-0 left-0 z-50 flex items-center justify-between px-4 py-3 shadow-xl md:fixed">
       {/* Logo on the left */}
-      <div className="shrink-0">
-        <Link
-          href="/"
-          className="text-2xl font-bold tracking-wider text-white lg:text-3xl"
-        >
+      <div>
+        <Link href="/" className="text-2xl font-bold text-white lg:text-3xl">
           ShopDemo
         </Link>
       </div>
@@ -41,8 +38,8 @@ export default function Header() {
         <Searchbar />
       </div>
 
-      {/* Right: Login and Cart buttons */}
-      <div className="flex items-center space-x-6">
+      {/* Right: Profile & Cart (Hidden on Mobile) */}
+      <div className="hidden items-center space-x-6 md:flex">
         <AuthButton />
         <Link
           href="/cart"
@@ -50,7 +47,7 @@ export default function Header() {
         >
           <ShoppingCart className="h-5 w-5" />
           {mounted && itemCount > 0 && (
-            <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs">
+            <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-green-600 text-xs">
               {itemCount}
             </span>
           )}

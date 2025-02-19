@@ -22,7 +22,7 @@ export default async function ProductPage({
   }
 
   return (
-    <main className="container mx-auto mt-14 px-4 py-8">
+    <main className="container mx-auto mt-0 px-4 py-8 md:mt-14">
       <div className="flex flex-col overflow-hidden bg-white md:flex-row">
         {/* Image Section */}
         <div className="relative h-64 md:h-auto md:w-1/2">

@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 
 export default function NotFoundPage() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-gray-300 p-10 text-center">
+    <main className="mt-0 flex min-h-screen flex-col items-center justify-center p-10 text-center md:mt-14">
       <Image
         unoptimized
         src="/assets/common/not-found.gif"
@@ -22,6 +22,6 @@ export default function NotFoundPage() {
       <Link href={'/'}>
         <Button variant={'secondary'}>Go Back Home</Button>
       </Link>
-    </div>
+    </main>
   );
 }

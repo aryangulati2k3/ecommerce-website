@@ -7,13 +7,13 @@ import CTASection from '@/sections/home-page/cta-section';
 
 export default async function Home() {
   return (
-    <main className="container mx-auto flex w-full max-w-7xl flex-col justify-center px-4 py-8">
+    <main className="container mx-auto mt-0 flex w-full max-w-7xl flex-col justify-center px-4 py-8 md:mt-14">
       <HeroCarousel />
       <CategoryCarousel />
       <CategorySection category="electronics" />
       <DealsSection />
       <AltCategorySection category="women's clothing" />
-      <CTASection/>
+      <CTASection />
     </main>
   );
 }

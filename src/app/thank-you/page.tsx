@@ -26,7 +26,7 @@ export default function ThankYouPage() {
   }, []);
 
   return (
-    <div className="mx-auto flex min-h-screen w-full max-w-3xl flex-col items-center justify-center p-6 text-center">
+    <main className="mx-auto mt-0 flex min-h-screen w-full max-w-3xl flex-col items-center justify-center p-6 text-center md:mt-14">
       <h2 className="mb-4 text-3xl font-bold text-green-600">
         🎉 Order Placed!
       </h2>
@@ -57,6 +57,6 @@ export default function ThankYouPage() {
       >
         Continue Shopping
       </Link>
-    </div>
+    </main>
   );
 }
