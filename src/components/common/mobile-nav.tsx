@@ -34,7 +34,7 @@ export default function MobileNavbar() {
         {/* Cart */}
         <Link
           href="/cart"
-          className="relative flex flex-col items-center text-gray-700"
+          className={`${pathname.includes('/cart') ? 'text-green-600' : 'text-gray-700'} relative flex flex-col items-center`}
         >
           <ShoppingCart size={24} />
           <span className="text-xs">Cart</span>

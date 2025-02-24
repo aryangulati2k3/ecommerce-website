@@ -24,14 +24,22 @@ export default async function ProductPage({
   return (
     <main className="container mx-auto mt-0 px-4 py-8 md:mt-14">
       <div className="flex flex-col overflow-hidden bg-white md:flex-row">
-        {/* Image Section */}
-        <div className="relative h-64 md:h-auto md:w-1/2">
-          <Image
-            src={product.image}
-            alt={product.title}
-            fill
-            className="object-contain p-4"
-          />
+        {/* Image + Add to Cart on Desktop */}
+        <div className="relative flex flex-col items-center md:w-1/2">
+          <div className="relative h-64 w-full md:h-[500px]">
+            <Image
+              src={product.image}
+              alt={product.title}
+              width={400}
+              height={400} 
+              className="h-full w-full object-contain p-4"
+            />
+          </div>
+
+          {/* Desktop Add to Cart (Under Image) */}
+          <div className="hidden w-full md:block">
+            <AddToCartButton product={product} />
+          </div>
         </div>
 
         {/* Details Section */}
@@ -43,10 +51,12 @@ export default async function ProductPage({
           <p className="mt-6 leading-relaxed text-gray-600">
             {product.description}
           </p>
-          <div className="mt-auto pt-6">
-            <AddToCartButton product={product} />
-          </div>
         </div>
+      </div>
+
+      {/* Sticky Add to Cart Bar on Mobile */}
+      <div className="fixed right-0 bottom-14 left-0 z-50 bg-white px-4 py-3 shadow-lg md:hidden">
+        <AddToCartButton product={product} />
       </div>
     </main>
   );

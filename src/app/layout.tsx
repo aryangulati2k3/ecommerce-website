@@ -25,7 +25,7 @@ export default function RootLayout({
           <Header />
           {children}
           <MobileNavbar />
-          <CartSummaryBar/>
+          <CartSummaryBar />
         </CartProvider>
         <Footer />
       </body>
