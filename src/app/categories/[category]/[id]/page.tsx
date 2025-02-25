@@ -12,10 +12,11 @@ import {
 import { capitalizeWords } from '@/lib/utils';
 
 interface ProductPageProps {
-  params: { category: string; id: string };
+  params: Promise<{ category: string; id: string }>;
 }
 
-export default async function ProductPage({ params }: ProductPageProps) {
+export default async function ProductPage(props: ProductPageProps) {
+  const params = await props.params;
   const { category, id } = params;
   const decodedCategory = decodeURIComponent(category);
   const decodedId = decodeURIComponent(id);
