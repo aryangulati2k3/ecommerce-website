@@ -22,9 +22,10 @@ export default function CartSummaryBar() {
   if (pathname.startsWith('/products/') || itemCount === 0) return null;
 
   return (
-    <div className="fixed bottom-14 left-0 right-0 z-40 flex items-center justify-between bg-green-500 px-4 py-3 text-white md:hidden">
+    <div className="fixed right-0 bottom-14 left-0 z-40 flex items-center justify-between bg-green-500 px-4 py-3 text-white md:hidden">
       <div className="text-sm font-medium">
-        {itemCount} {itemCount === 1 ? 'Item' : 'Items'} | ₹{totalPrice.toFixed(2)}
+        {itemCount} {itemCount === 1 ? 'Item' : 'Items'} | ₹
+        {totalPrice.toFixed(2)}
       </div>
       <Link href="/cart" className="flex items-center space-x-2 font-semibold">
         <ShoppingBag className="h-5 w-5" />

@@ -1,15 +1,20 @@
 import Image from 'next/image';
 import { fetchProducts, Product } from '@/lib/api';
 import AddToCartButton from '@/components/cart/add-to-cart-button';
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbSeparator,
+  BreadcrumbPage,
+} from '@/components/ui/breadcrumb';
 
 interface ProductPageProps {
-  params: Promise<{ id: string }>;
+  params: { id: string };
 }
 
-export default async function ProductPage({
-  params: paramsPromise,
-}: ProductPageProps) {
-  const params = await paramsPromise;
+export default async function ProductPage({ params }: ProductPageProps) {
   const products: Product[] = await fetchProducts();
   const product = products.find((p) => p.id.toString() === params.id);
 
@@ -23,6 +28,28 @@ export default async function ProductPage({
 
   return (
     <main className="container mx-auto mt-0 px-4 py-8 md:mt-14">
+      {/* Breadcrumb */}
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/">Home</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbLink
+              href={`/categories/${encodeURIComponent(product.category)}`}
+            >
+              {product.category}
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>{product.title}</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+
+      {/* Product Details */}
       <div className="flex flex-col overflow-hidden bg-white md:flex-row">
         {/* Image + Add to Cart on Desktop */}
         <div className="relative flex flex-col items-center md:w-1/2">
@@ -31,7 +58,7 @@ export default async function ProductPage({
               src={product.image}
               alt={product.title}
               width={400}
-              height={400} 
+              height={400}
               className="h-full w-full object-contain p-4"
             />
           </div>

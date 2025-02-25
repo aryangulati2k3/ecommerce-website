@@ -4,6 +4,14 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { fetchProductsByCategory } from '@/lib/api';
 import ProductCard from '@/components/products/product-card';
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbSeparator,
+  BreadcrumbPage,
+} from '@/components/ui/breadcrumb';
 import { Product } from '@/lib/api';
 
 export default function CategoryPage() {
@@ -38,6 +46,19 @@ export default function CategoryPage() {
 
   return (
     <main className="mx-auto mt-0 min-h-screen w-full max-w-7xl px-4 py-6 md:mt-14">
+      {/* Breadcrumb */}
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/">Home</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>{decodedCategory}</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+
       <h1 className="mb-6 text-center text-3xl font-bold capitalize">
         {decodedCategory}
       </h1>

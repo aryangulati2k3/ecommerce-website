@@ -93,11 +93,11 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
 
   // ✅ **On PDP in mobile view, show floating button transition**
   return (
-    <div className="fixed bg-white py-2 right-0 bottom-16 left-0 px-4 transition-all duration-300 ease-in-out md:hidden">
+    <div className="fixed right-0 bottom-16 left-0 bg-white px-4 py-2 transition-all duration-300 ease-in-out md:hidden">
       {!cartItem ? (
         <Button
           variant="outline"
-          className="w-full bg-green-600 py-2 font-semibold text-white hover:text-white hover:bg-green-700"
+          className="w-full bg-green-600 py-2 font-semibold text-white hover:bg-green-700 hover:text-white"
           onClick={handleAdd}
         >
           Add to Cart
@@ -113,11 +113,17 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
           </Link>
 
           <div className="flex w-1/2 items-center justify-between rounded-lg bg-green-600 px-4 text-white shadow-md">
-            <button onClick={handleDecrement} className="text-lg font-bold w-1/3">
+            <button
+              onClick={handleDecrement}
+              className="w-1/3 text-lg font-bold"
+            >
               –
             </button>
             <span className="text-lg font-semibold">{cartItem.quantity}</span>
-            <button onClick={handleIncrement} className="text-lg font-bold w-1/3">
+            <button
+              onClick={handleIncrement}
+              className="w-1/3 text-lg font-bold"
+            >
               +
             </button>
           </div>

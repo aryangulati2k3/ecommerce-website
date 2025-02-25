@@ -19,7 +19,7 @@ export default async function CategoriesPage() {
   }
 
   return (
-    <section className="mx-auto w-full min-h-screen mt-0 md:mt-14 max-w-7xl px-4 py-8">
+    <section className="mx-auto mt-0 min-h-screen w-full max-w-7xl px-4 py-8 md:mt-14">
       <h2 className="mb-6 text-center text-2xl font-bold md:text-3xl">
         All Categories
       </h2>
