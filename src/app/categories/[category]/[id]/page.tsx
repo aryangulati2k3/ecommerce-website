@@ -1,6 +1,15 @@
 import Image from 'next/image';
 import { fetchProducts, Product } from '@/lib/api';
 import AddToCartButton from '@/components/cart/add-to-cart-button';
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbSeparator,
+  BreadcrumbPage,
+} from '@/components/ui/breadcrumb';
+import { capitalizeWords } from '@/lib/utils';
 
 interface ProductPageProps {
   params: Promise<{ id: string }>;
@@ -23,6 +32,31 @@ export default async function ProductPage({
 
   return (
     <main className="container mx-auto mt-0 px-4 py-8 md:mt-14">
+      {/* ✅ Breadcrumb Navigation */}
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/">Home</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/categories">Categories</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbLink
+              href={`/categories/${encodeURIComponent(product.category)}`}
+            >
+              {capitalizeWords(product.category)}
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>{product.title}</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+
       <div className="flex flex-col overflow-hidden bg-white md:flex-row">
         {/* Image + Add to Cart on Desktop */}
         <div className="relative flex flex-col items-center md:w-1/2">
@@ -36,7 +70,7 @@ export default async function ProductPage({
             />
           </div>
 
-          {/* Desktop Add to Cart (Under Image) */}
+          {/* ✅ Desktop Add to Cart (Under Image) */}
           <div className="hidden w-full md:block">
             <AddToCartButton product={product} />
           </div>
@@ -54,7 +88,7 @@ export default async function ProductPage({
         </div>
       </div>
 
-      {/* Sticky Add to Cart Bar on Mobile */}
+      {/* ✅ Sticky Add to Cart Bar on Mobile */}
       <div className="fixed right-0 bottom-14 left-0 z-50 bg-white px-4 py-3 shadow-lg md:hidden">
         <AddToCartButton product={product} />
       </div>
