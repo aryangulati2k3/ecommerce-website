@@ -15,7 +15,10 @@ export default function AltProductCard({ product }: { product: Product }) {
   const discount = Math.floor(Math.random() * (49 - 5 + 1)) + 5;
 
   return (
-    <Link href={`/products/${product.id}`} passHref>
+    <Link
+      href={`/categories/${encodeURIComponent(product.category)}/${product.id}`}
+      passHref
+    >
       <Card className="flex h-full w-full max-w-xs flex-col justify-between sm:max-w-sm md:max-w-md lg:max-w-lg">
         <div>
           <CardHeader>

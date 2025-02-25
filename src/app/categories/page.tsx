@@ -1,6 +1,15 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { fetchCategories } from '@/lib/api';
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbSeparator,
+  BreadcrumbPage,
+} from '@/components/ui/breadcrumb';
+import { capitalizeWords } from '@/lib/utils';
 
 const categoryImagesMap: Record<string, string> = {
   electronics: '/assets/home/categories-section/electronics.jpg',
@@ -20,6 +29,20 @@ export default async function CategoriesPage() {
 
   return (
     <section className="mx-auto mt-0 min-h-screen w-full max-w-7xl px-4 py-8 md:mt-14">
+      {/* Breadcrumbs */}
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/">Home</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>Categories</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+
+      {/* Heading */}
       <h2 className="mb-6 text-center text-2xl font-bold md:text-3xl">
         All Categories
       </h2>
@@ -48,7 +71,7 @@ export default async function CategoriesPage() {
               )}
             </div>
             <p className="mt-3 text-center text-lg font-medium capitalize">
-              {category}
+              {capitalizeWords(category)}
             </p>
           </Link>
         ))}

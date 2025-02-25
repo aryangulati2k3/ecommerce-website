@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { fetchProducts, Product } from '@/lib/api';
+import { fetchProductsByCategory, Product } from '@/lib/api';
 import AddToCartButton from '@/components/cart/add-to-cart-button';
 import {
   Breadcrumb,
@@ -9,14 +9,20 @@ import {
   BreadcrumbSeparator,
   BreadcrumbPage,
 } from '@/components/ui/breadcrumb';
+import { capitalizeWords } from '@/lib/utils';
 
 interface ProductPageProps {
-  params: { id: string };
+  params: { category: string; id: string };
 }
 
 export default async function ProductPage({ params }: ProductPageProps) {
-  const products: Product[] = await fetchProducts();
-  const product = products.find((p) => p.id.toString() === params.id);
+  const { category, id } = params;
+  const decodedCategory = decodeURIComponent(category);
+  const decodedId = decodeURIComponent(id);
+
+  // Fetch products from the specified category
+  const products: Product[] = await fetchProductsByCategory(decodedCategory);
+  const product = products.find((p) => p.id.toString() === decodedId);
 
   if (!product) {
     return (
@@ -36,10 +42,14 @@ export default async function ProductPage({ params }: ProductPageProps) {
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
+            <BreadcrumbLink href="/categories">Categories</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
             <BreadcrumbLink
-              href={`/categories/${encodeURIComponent(product.category)}`}
+              href={`/categories/${encodeURIComponent(decodedCategory)}`}
             >
-              {product.category}
+              {capitalizeWords(decodedCategory)}
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
@@ -73,7 +83,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
         <div className="flex flex-col p-8 md:w-1/2">
           <h1 className="text-3xl font-bold text-gray-800">{product.title}</h1>
           <p className="mt-4 text-xl font-semibold text-blue-600">
-            ${product.price.toFixed(2)}
+            ₹{product.price.toFixed(2)}
           </p>
           <p className="mt-6 leading-relaxed text-gray-600">
             {product.description}

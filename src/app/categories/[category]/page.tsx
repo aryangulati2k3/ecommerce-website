@@ -13,6 +13,7 @@ import {
   BreadcrumbPage,
 } from '@/components/ui/breadcrumb';
 import { Product } from '@/lib/api';
+import { capitalizeWords } from '@/lib/utils'; // Utility function for formatting category names
 
 export default function CategoryPage() {
   const { category } = useParams();
@@ -54,13 +55,18 @@ export default function CategoryPage() {
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbPage>{decodedCategory}</BreadcrumbPage>
+            <BreadcrumbLink href="/categories">Categories</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>{capitalizeWords(decodedCategory)}</BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
 
+      {/* Page Heading */}
       <h1 className="mb-6 text-center text-3xl font-bold capitalize">
-        {decodedCategory}
+        {capitalizeWords(decodedCategory)}
       </h1>
 
       {products.length === 0 ? (

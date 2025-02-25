@@ -15,7 +15,10 @@ import { Product } from '@/lib/api';
 
 export default function ProductCard({ product }: { product: Product }) {
   return (
-    <Link href={`/products/${product.id}`} passHref>
+    <Link
+      href={`/categories/${encodeURIComponent(product.category)}/${product.id}`}
+      passHref
+    >
       <Card className="flex h-70 w-full max-w-xs flex-col justify-between sm:max-w-sm md:h-90 md:max-w-md lg:max-w-lg">
         <div>
           <CardHeader>
