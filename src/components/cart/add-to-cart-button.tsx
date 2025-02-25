@@ -18,9 +18,8 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
   const pathname = usePathname();
 
   useEffect(() => {
-    // Detect screen size
     const checkScreenSize = () => setIsMobile(window.innerWidth <= 768);
-    checkScreenSize(); // Check on mount
+    checkScreenSize();
     window.addEventListener('resize', checkScreenSize);
     return () => window.removeEventListener('resize', checkScreenSize);
   }, []);
@@ -59,10 +58,8 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
     }
   };
 
-  // **Check if we're on the PDP page and in mobile view**
   const isPDP = pathname.includes('/products/');
 
-  // ✅ **If not on PDP OR not mobile, return the standard Add to Cart**
   if (!isMobile || !isPDP) {
     return !cartItem ? (
       <Button
@@ -91,7 +88,6 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
     );
   }
 
-  // ✅ **On PDP in mobile view, show floating button transition**
   return (
     <div className="fixed right-0 bottom-16 left-0 bg-white px-4 py-2 transition-all duration-300 ease-in-out md:hidden">
       {!cartItem ? (
