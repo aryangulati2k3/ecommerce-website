@@ -38,66 +38,83 @@ export default function Cart() {
       ) : (
         <>
           <div className="space-y-4">
-            {state.items.map(({ product, quantity }) => (
-              <div
-                key={product.id}
-                className="flex items-center rounded-lg border border-gray-200 p-4 shadow-xs"
-              >
-                <div className="relative h-16 w-16 shrink-0">
-                  <Image
-                    src={product.image}
-                    alt={product.title}
-                    fill
-                    className="rounded object-contain"
-                  />
-                </div>
-                <div className="ml-4 grow">
-                  <h3 className="text-md line-clamp-2 font-semibold">
-                    {product.title}
-                  </h3>
-                  <p className="text-gray-600">${product.price.toFixed(2)}</p>
-                </div>
-                <div className="flex items-center space-x-2 rounded-lg border">
-                  <button
-                    onClick={() =>
-                      dispatch({
-                        type: 'UPDATE_QUANTITY',
-                        productId: product.id,
-                        quantity: quantity - 1,
-                      })
-                    }
-                    disabled={quantity <= 1}
-                    className="rounded-l-lg border-r border-l-0 px-3 py-1 hover:bg-gray-200 disabled:opacity-30"
-                  >
-                    –
-                  </button>
-                  <span className="px-3 font-medium">{quantity}</span>
-                  <button
-                    onClick={() =>
-                      dispatch({
-                        type: 'UPDATE_QUANTITY',
-                        productId: product.id,
-                        quantity: quantity + 1,
-                      })
-                    }
-                    className="rounded-r-lg border-r-0 border-l px-3 py-1 hover:bg-gray-200"
-                  >
-                    +
-                  </button>
-                </div>
-                <button
-                  className="ml-4 text-red-500 hover:text-red-700"
-                  onClick={() =>
-                    dispatch({
-                      type: 'REMOVE_FROM_CART',
-                      productId: product.id,
-                    })
-                  }
+            {state.items.map(({ product, quantity }) => {
+              const productUrl = `/categories/${encodeURIComponent(product.category)}/${encodeURIComponent(product.id)}`;
+
+              return (
+                <div
+                  key={product.id}
+                  className="flex items-center rounded-lg border border-gray-200 p-4 shadow-xs"
                 >
-                  <X />
-                </button>
-              </div>
-            ))}
+                  {/* Product Image */}
+                  <Link
+                    href={productUrl}
+                    className="relative h-16 w-16 shrink-0"
+                  >
+                    <Image
+                      src={product.image}
+                      alt={product.title}
+                      fill
+                      className="cursor-pointer rounded object-contain"
+                    />
+                  </Link>
+
+                  <div className="ml-4 grow">
+                    {/* Product Title */}
+                    <Link
+                      href={productUrl}
+                      className="text-md font-semibold hover:text-blue-600"
+                    >
+                      {product.title}
+                    </Link>
+                    <p className="text-gray-600">${product.price.toFixed(2)}</p>
+                  </div>
+
+                  {/* Quantity Controls */}
+                  <div className="flex items-center space-x-2 rounded-lg border">
+                    <button
+                      onClick={() =>
+                        dispatch({
+                          type: 'UPDATE_QUANTITY',
+                          productId: product.id,
+                          quantity: quantity - 1,
+                        })
+                      }
+                      disabled={quantity <= 1}
+                      className="rounded-l-lg border-r border-l-0 px-3 py-1 hover:bg-gray-200 disabled:opacity-30"
+                    >
+                      –
+                    </button>
+                    <span className="px-3 font-medium">{quantity}</span>
+                    <button
+                      onClick={() =>
+                        dispatch({
+                          type: 'UPDATE_QUANTITY',
+                          productId: product.id,
+                          quantity: quantity + 1,
+                        })
+                      }
+                      className="rounded-r-lg border-r-0 border-l px-3 py-1 hover:bg-gray-200"
+                    >
+                      +
+                    </button>
+                  </div>
+
+                  {/* Remove Item Button */}
+                  <button
+                    className="ml-4 text-red-500 hover:text-red-700"
+                    onClick={() =>
+                      dispatch({
+                        type: 'REMOVE_FROM_CART',
+                        productId: product.id,
+                      })
+                    }
+                  >
+                    <X />
+                  </button>
+                </div>
+              );
+            })}
           </div>
 
           {/* Checkout Section */}

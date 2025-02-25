@@ -58,7 +58,8 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
     }
   };
 
-  const isPDP = pathname.includes('/products/');
+  const isPDP =
+    pathname.startsWith('/categories/') && pathname.split('/').length === 4;
 
   if (!isMobile || !isPDP) {
     return !cartItem ? (
