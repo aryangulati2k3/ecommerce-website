@@ -10,6 +10,7 @@ import {
   BreadcrumbPage,
 } from '@/components/ui/breadcrumb';
 import { capitalizeWords } from '@/lib/utils';
+import ShareButton from '@/components/ui/share-button';
 
 interface ProductPageProps {
   params: Promise<{ id: string }>;
@@ -57,7 +58,7 @@ export default async function ProductPage({
         </BreadcrumbList>
       </Breadcrumb>
 
-      <div className="flex flex-col overflow-hidden bg-white md:flex-row">
+      <div className="mt-4 flex flex-col gap-4 overflow-hidden bg-white md:flex-row">
         {/* Image + Add to Cart on Desktop */}
         <div className="relative flex flex-col items-center md:w-1/2">
           <div className="relative h-64 w-full md:h-[500px]">
@@ -77,14 +78,47 @@ export default async function ProductPage({
         </div>
 
         {/* Details Section */}
-        <div className="flex flex-col p-8 md:w-1/2">
-          <h1 className="text-3xl font-bold text-gray-800">{product.title}</h1>
-          <p className="mt-4 text-xl font-semibold text-blue-600">
-            ${product.price.toFixed(2)}
-          </p>
-          <p className="mt-6 leading-relaxed text-gray-600">
-            {product.description}
-          </p>
+        <div className="flex flex-col gap-4 md:w-1/2">
+          <div className="flex flex-col rounded border p-4 md:p-8">
+            <div className="flex items-center gap-2">
+              <h1 className="text-2xl font-bold text-gray-800 md:text-3xl">
+                {product.title}
+              </h1>
+              <ShareButton />
+            </div>
+
+            <p className="mt-4 text-2xl font-semibold text-blue-600 md:text-3xl">
+              ${product.price.toFixed(2)}
+            </p>
+            <p className="text-xs text-gray-600">(incl. of all taxes)</p>
+            <p className="mt-6 leading-relaxed text-gray-600">
+              {product.description}
+            </p>
+          </div>
+
+          <div className="flex flex-col rounded border p-4 md:p-8">
+            <h1 className="font-bold">Highlights</h1>
+            <div className="grid grid-cols-2 gap-y-3 text-justify">
+              <h1 className="font-semibold text-gray-500">Description</h1>
+              <p className="leading-relaxed text-gray-600">
+                {product.description}
+              </p>
+              <h1 className="font-semibold text-gray-500">Brand</h1>
+              <p className="leading-relaxed text-gray-600">ShopDemo</p>
+              <h1 className="font-semibold text-gray-500">Disclaimer</h1>
+              <p className="leading-relaxed text-gray-600">
+                Efforts are made to ensure accuracy, but product packaging may
+                have additional or updated details. Please do not rely solely on
+                the information provided and refer to the packaging for complete
+                details
+              </p>
+              <h1 className="font-semibold text-gray-500">Customer Care</h1>
+              <p className="leading-relaxed text-gray-600">
+                In case of any issue, contact us E-mail address:
+                support@shopdemo.com
+              </p>
+            </div>
+          </div>
         </div>
       </div>
 
