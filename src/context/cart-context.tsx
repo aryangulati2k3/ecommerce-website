@@ -1,14 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
 'use client';
 
-import React, {
-  createContext,
-  useReducer,
-  useContext,
-  ReactNode,
-  useEffect,
-} from 'react';
+import React, { createContext, useReducer, useContext, ReactNode } from 'react';
 
 import type {
   Product,
@@ -65,21 +57,7 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
 };
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
-  const [state, dispatch] = useReducer(
-    cartReducer,
-    { items: [] },
-    (initialState) => {
-      if (typeof window !== 'undefined') {
-        const stored = localStorage.getItem('cart');
-        return stored ? JSON.parse(stored) : initialState;
-      }
-      return initialState;
-    },
-  );
-
-  useEffect(() => {
-    localStorage.setItem('cart', JSON.stringify(state));
-  }, [state]);
+  const [state, dispatch] = useReducer(cartReducer, { items: [] });
 
   return (
     <CartContext.Provider value={{ state, dispatch }}>
@@ -94,4 +72,12 @@ export const useCart = () => {
     throw new Error('useCart must be used within a CartProvider');
   }
   return context;
+};
+
+export const useCartItemCount = () => {
+  const context = useContext(CartContext);
+  if (!context) {
+    throw new Error('useCartItemCount must be used within a CartProvider');
+  }
+  return context.state.items.reduce((total, item) => total + item.quantity, 0);
 };

@@ -1,6 +1,13 @@
 'use client';
 
-import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import React, {
+  memo,
+  useState,
+  useEffect,
+  useRef,
+  useMemo,
+  useCallback,
+} from 'react';
 import { fetchProducts } from '@/lib/api';
 import { Product } from '@/lib/api';
 import { useRouter } from 'next/navigation';
@@ -77,7 +84,7 @@ function useMediaQuery(query: string) {
 }
 
 // ─── SEARCHBAR COMPONENT ─────────────────────────────────────────────────────
-export default function Searchbar() {
+const Searchbar = () => {
   // Declare isMobile first so it is available in subsequent callbacks
   const isMobile = useMediaQuery('(max-width: 1023px)');
 
@@ -141,7 +148,9 @@ export default function Searchbar() {
   // ── HANDLE ITEM SELECTION ─────────────────────────────────────
   const handleSelect = useCallback(
     (product: Product) => {
-      router.push(`/products/${product.id}`);
+      router.push(
+        `/categories/${encodeURIComponent(product.category)}/${product.id}`,
+      );
       setQuery('');
       setFilteredProducts([]);
       setSelectedIndex(-1);
@@ -345,4 +354,6 @@ export default function Searchbar() {
       )}
     </>
   );
-}
+};
+
+export default memo(Searchbar);

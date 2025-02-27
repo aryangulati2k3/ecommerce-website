@@ -2,27 +2,24 @@
 
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
-import { useCart } from '@/context/cart-context';
 import { ShoppingCart } from 'lucide-react';
 import AuthButton from '@/components/auth/auth-button';
 import { useEffect, useState } from 'react';
+import { useCartItemCount } from '@/context/cart-context';
+
+// Dynamically import the Searchbar with SSR disabled.
+const Searchbar = dynamic(() => import('@/components/common/search'), {
+  ssr: false,
+});
 
 export default function Header() {
   const [mounted, setMounted] = useState(false);
+
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  const { state } = useCart();
-  const itemCount = state.items.reduce(
-    (total, item) => total + item.quantity,
-    0,
-  );
-
-  // Dynamically import the Searchbar with SSR disabled.
-  const Searchbar = dynamic(() => import('@/components/common/search'), {
-    ssr: false,
-  });
+  const itemCount = useCartItemCount();
 
   return (
     <header className="bg-primary-color relative top-0 right-0 left-0 z-50 flex items-center justify-between px-4 py-3 shadow-xl md:fixed">
