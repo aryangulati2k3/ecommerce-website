@@ -5,11 +5,12 @@ import {
   CarouselContent,
   CarouselItem,
 } from '@/components/ui/carousel';
-import Autoplay from 'embla-carousel-autoplay';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useMemo } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { type CarouselApi } from '@/components/ui/carousel';
+import gsap from 'gsap';
 
 const slides = [
   {
@@ -33,15 +34,64 @@ const slides = [
 ];
 
 export default function HeroCarousel() {
-  // Memoize the autoplay plugin to avoid recreating it on every render.
-  const autoplayPlugin = useMemo(() => Autoplay({ delay: 5000 }), []);
+  const [api, setApi] = useState<CarouselApi | null>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const autoplayDelay = 5000; // 5s autoplay
+  const progressRef = useRef<HTMLDivElement[]>([]);
+  const progressTimeline = useRef<gsap.core.Tween | null>(null);
+
+  // Function to start the GSAP progress animation
+  const startProgressAnimation = () => {
+    if (progressTimeline.current) progressTimeline.current.kill(); // Kill previous animation
+
+    // Animate the progress bar for the current slide
+    progressTimeline.current = gsap.fromTo(
+      progressRef.current[activeIndex],
+      { width: '0%' },
+      {
+        width: '100%',
+        duration: autoplayDelay / 1000, // Convert ms to seconds
+        ease: 'linear',
+        onComplete: () => {
+          if (api) {
+            const nextIndex = (activeIndex + 1) % slides.length;
+            api.scrollTo(nextIndex);
+          }
+        },
+      },
+    );
+  };
+
+  useEffect(() => {
+    if (!api) return;
+
+    setActiveIndex(api.selectedScrollSnap());
+
+    api.on('select', () => {
+      setActiveIndex(api.selectedScrollSnap());
+      startProgressAnimation(); // Restart animation when slide changes
+    });
+
+    startProgressAnimation(); // Start on initial render
+
+    return () => {
+      if (progressTimeline.current) progressTimeline.current.kill(); // Cleanup animation
+    };
+  }, [api, activeIndex]);
+
+  // Handle clicking on progress bar
+  const handleProgressBarClick = (index: number) => {
+    if (api) {
+      api.scrollTo(index);
+    }
+  };
 
   return (
-    <div className="mx-auto w-full max-w-7xl rounded-lg">
+    <div className="relative mx-auto w-full max-w-7xl rounded-lg">
       <Carousel
         opts={{ align: 'start', loop: true }}
-        plugins={[autoplayPlugin]}
         className="relative"
+        setApi={setApi}
       >
         <CarouselContent className="flex">
           {slides.map(({ image, title, subtitle, link }) => (
@@ -75,6 +125,25 @@ export default function HeroCarousel() {
           ))}
         </CarouselContent>
       </Carousel>
+
+      {/* Progress Bar */}
+      <div className="absolute bottom-4 left-1/2 flex w-24 -translate-x-1/2 gap-2">
+        {slides.map((_, index) => (
+          <div
+            key={index}
+            className="h-1 w-full cursor-pointer overflow-hidden rounded-full bg-gray-300"
+            onClick={() => handleProgressBarClick(index)}
+          >
+            <div
+              ref={(el) => {
+                if (el) progressRef.current[index] = el;
+              }}
+              className="h-full bg-black"
+              style={{ width: index === activeIndex ? '100%' : '0%' }}
+            />
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

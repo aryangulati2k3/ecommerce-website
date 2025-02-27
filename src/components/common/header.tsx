@@ -22,10 +22,10 @@ export default function Header() {
   const itemCount = useCartItemCount();
 
   return (
-    <header className="bg-primary-color relative top-0 right-0 left-0 z-50 flex items-center justify-between px-4 py-3 shadow-xl md:fixed">
+    <header className="bg-primary-color relative top-0 right-0 left-0 z-50 flex items-center justify-between px-4 py-2 shadow-xl md:fixed">
       {/* Logo on the left */}
       <div>
-        <Link href="/" className="text-2xl font-bold text-white lg:text-3xl">
+        <Link href="/" className="text-2xl font-bold text-white">
           ShopDemo
         </Link>
       </div>
