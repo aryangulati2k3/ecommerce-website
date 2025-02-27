@@ -1,6 +1,8 @@
 import ProductCard from '@/components/products/product-card';
 import { fetchProducts, Product } from '@/lib/api';
 
+// TODO: Delete after use case is fullfilled
+
 export default async function ProductsPage() {
   const products: Product[] = await fetchProducts();
   return (

@@ -25,7 +25,7 @@ export default function Cart() {
   };
 
   return (
-    <div className="mx-auto flex h-screen min-h-[75vh] max-w-4xl flex-col bg-white p-6">
+    <div className="mx-auto flex min-h-[75vh] max-w-4xl flex-col bg-white p-6">
       <h2 className="mb-6 text-center text-2xl font-bold">My Cart</h2>
       {state.items.length === 0 ? (
         <div className="flex flex-col items-center text-center">
@@ -102,7 +102,7 @@ export default function Cart() {
 
                   {/* Remove Item Button */}
                   <button
-                    className="ml-4 text-red-500 hover:text-red-700"
+                    className="ml-2 text-red-500 hover:text-red-700"
                     onClick={() =>
                       dispatch({
                         type: 'REMOVE_FROM_CART',

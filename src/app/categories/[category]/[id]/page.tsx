@@ -91,7 +91,7 @@ export default async function ProductPage({
               ${product.price.toFixed(2)}
             </p>
             <p className="text-xs text-gray-600">(incl. of all taxes)</p>
-            <p className="mt-6 leading-relaxed text-gray-600">
+            <p className="mt-6 text-justify leading-relaxed text-gray-600">
               {product.description}
             </p>
           </div>
