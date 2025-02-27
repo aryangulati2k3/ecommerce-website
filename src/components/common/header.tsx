@@ -42,7 +42,7 @@ export default function Header() {
           href="/cart"
           className="relative flex flex-col items-center text-white"
         >
-          <ShoppingCart className="h-5 w-5" />
+          <ShoppingCart size={24} />
           {mounted && itemCount > 0 && (
             <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-green-600 text-xs">
               {itemCount}

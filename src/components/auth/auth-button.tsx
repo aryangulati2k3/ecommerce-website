@@ -1,10 +1,30 @@
-// AuthButton.tsx
-import React, { useEffect } from 'react';
+'use client';
+
+import React, { useEffect, useState } from 'react';
 import AuthModal from '@/components/auth/auth-modal';
 import { User } from 'lucide-react';
+import { cva, type VariantProps } from 'class-variance-authority';
 
-const AuthButton: React.FC = () => {
-  const [isModalOpen, setIsModalOpen] = React.useState(false);
+// Define button styles using CVA
+const authButtonVariants = cva(
+  'flex cursor-pointer flex-col items-center transition-colors duration-200',
+  {
+    variants: {
+      variant: {
+        white: 'text-white hover:text-gray-200',
+        green: 'text-gray-700 hover:text-green-600',
+      },
+    },
+    defaultVariants: {
+      variant: 'white',
+    },
+  }
+);
+
+interface AuthButtonProps extends VariantProps<typeof authButtonVariants> {}
+
+const AuthButton: React.FC<AuthButtonProps> = ({ variant }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Close modal when Escape key is pressed
   useEffect(() => {
@@ -21,9 +41,9 @@ const AuthButton: React.FC = () => {
     <>
       <button
         onClick={() => setIsModalOpen(true)}
-        className="flex cursor-pointer flex-col items-center text-white"
+        className={authButtonVariants({ variant })}
       >
-        <User className="h-5 w-5" />
+        <User size={24} />
       </button>
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">

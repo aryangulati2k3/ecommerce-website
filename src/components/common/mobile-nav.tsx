@@ -1,9 +1,10 @@
 'use client';
 
 import Link from 'next/link';
-import { Home, Grid, ShoppingCart } from 'lucide-react';
+import { Home, Grid, ShoppingCart, User } from 'lucide-react';
 import { useCart } from '@/context/cart-context';
 import { usePathname } from 'next/navigation';
+import AuthButton from '@/components/auth/auth-button';
 
 export default function MobileNavbar() {
   const { state } = useCart();
@@ -31,10 +32,16 @@ export default function MobileNavbar() {
           <span className="text-xs">Categories</span>
         </Link>
 
+        {/* Auth (Login/Profile) */}
+        <div className='flex flex-col items-center'>
+          <AuthButton variant={'green'} />
+          <span className="text-xs">Profile</span>
+        </div>
+
         {/* Cart */}
         <Link
           href="/cart"
-          className={`${pathname.includes('/cart') ? 'text-green-600' : 'text-gray-700'} relative flex flex-col items-center`}
+          className={`relative flex flex-col items-center ${pathname.includes('/cart') ? 'text-green-600' : 'text-gray-700'}`}
         >
           <ShoppingCart size={24} />
           <span className="text-xs">Cart</span>
