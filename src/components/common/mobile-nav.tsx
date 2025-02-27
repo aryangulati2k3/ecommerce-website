@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Home, Grid, ShoppingCart, User } from 'lucide-react';
+import { Home, Grid, ShoppingCart } from 'lucide-react';
 import { useCart } from '@/context/cart-context';
 import { usePathname } from 'next/navigation';
 import AuthButton from '@/components/auth/auth-button';
@@ -33,7 +33,7 @@ export default function MobileNavbar() {
         </Link>
 
         {/* Auth (Login/Profile) */}
-        <div className='flex flex-col items-center'>
+        <div className="flex flex-col items-center">
           <AuthButton variant={'green'} />
           <span className="text-xs">Profile</span>
         </div>

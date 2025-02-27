@@ -18,12 +18,12 @@ const authButtonVariants = cva(
     defaultVariants: {
       variant: 'white',
     },
-  }
+  },
 );
 
-interface AuthButtonProps extends VariantProps<typeof authButtonVariants> {}
-
-const AuthButton: React.FC<AuthButtonProps> = ({ variant }) => {
+const AuthButton: React.FC<VariantProps<typeof authButtonVariants>> = ({
+  variant,
+}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Close modal when Escape key is pressed

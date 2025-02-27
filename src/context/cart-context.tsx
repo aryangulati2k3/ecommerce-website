@@ -2,13 +2,7 @@
 
 import React, { createContext, useReducer, useContext, ReactNode } from 'react';
 
-import type {
-  Product,
-  CartItem,
-  CartState,
-  CartAction,
-  CartContextProps,
-} from '@/lib/api';
+import type { CartState, CartAction, CartContextProps } from '@/lib/api';
 
 const CartContext = createContext<CartContextProps | undefined>(undefined);
 
